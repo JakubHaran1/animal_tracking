@@ -1,0 +1,48 @@
+[33mcommit 3990f5853f2a931adc22a171e8158dc974655e53[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Merge: d9b9555 c9934ed
+Author: jakubharan1 <jakub.haran02@gmail.com>
+Date:   Tue Mar 17 01:55:47 2026 +0100
+
+    Merge branch 'main' of https://github.com/JakubHaran1/animal_tracking
+
+[33mcommit d9b9555d2872fe46ccae996e716d42ce8b61352e[m[33m ([m[1;31morigin/init[m[33m, [m[1;32minit[m[33m)[m
+Author: jakubharan1 <jakub.haran02@gmail.com>
+Date:   Tue Mar 17 01:49:48 2026 +0100
+
+    initial architecture for AnimalTracking app
+
+[33mcommit c9934edc49431d4b2b70b0729d1cbe3ff7851342[m
+Merge: bcb6d18 1bd85a6
+Author: 🧙‍♂️ Jakub Harań 🧙‍♂️ <91425266+JakubHaran1@users.noreply.github.com>
+Date:   Tue Mar 17 01:48:30 2026 +0100
+
+    Merge pull request #2 from JakubHaran1/init
+    
+    initial architecture for AnimalTracking app
+
+[33mcommit 1bd85a61349edcd48d512ee1ec551f9b7c894e51[m
+Author: jakubharan1 <jakub.haran02@gmail.com>
+Date:   Tue Mar 17 01:45:11 2026 +0100
+
+    initial architecture for AnimalTracking app
+
+[33mcommit bcb6d18ce310b3f079f37f2b2c1212d4de74bc42[m
+Merge: aaeaa19 ef358dc
+Author: 🧙‍♂️ Jakub Harań 🧙‍♂️ <91425266+JakubHaran1@users.noreply.github.com>
+Date:   Mon Mar 9 22:15:19 2026 +0100
+
+    Merge pull request #1 from JakubHaran1/documentation
+    
+    add diagrams
+
+[33mcommit ef358dce319cf8069ade9270b8bf9792967e6a80[m[33m ([m[1;31morigin/documentation[m[33m, [m[1;32mdocumentation[m[33m)[m
+Author: jakubharan1 <jakub.haran02@gmail.com>
+Date:   Mon Mar 9 22:14:04 2026 +0100
+
+    add diagrams
+
+[33mcommit aaeaa196b6d554371f926258a2fb20fdc24ffb53[m
+Author: 🧙‍♂️ Jakub Harań 🧙‍♂️ <91425266+JakubHaran1@users.noreply.github.com>
+Date:   Mon Mar 9 20:42:59 2026 +0100
+
+    Initial commit
