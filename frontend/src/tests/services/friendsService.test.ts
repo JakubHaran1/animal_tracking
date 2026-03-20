@@ -34,4 +34,13 @@ describe("friendsService", () => {
     expect(after.some((friend) => friend.id === friendId)).toBe(false);
     expect(after.length).toBe(before.length - 1);
   });
+
+  it("returns friend ids list", async () => {
+    const { friendsService } = await import("../../services/friendsService");
+
+    const friends = await friendsService.getFriends();
+    const friendIds = await friendsService.getFriendIds();
+
+    expect(friendIds).toEqual(friends.map((friend) => friend.id));
+  });
 });
