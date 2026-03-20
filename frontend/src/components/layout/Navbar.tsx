@@ -52,7 +52,7 @@ export function Navbar({
           onClick={isAuthenticated ? onLogoutClick : onLoginClick}
           className="rounded-md bg-amber-400 px-4 py-2 text-sm font-semibold text-green-950 transition hover:bg-amber-300"
         >
-          {isAuthenticated ? "Wyloguj" : "Logowanie / Rejestracja"}
+          {isAuthenticated ? "Wyloguj" : "Zaloguj"}
         </button>
       </div>
     </header>
