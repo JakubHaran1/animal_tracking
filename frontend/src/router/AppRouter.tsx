@@ -11,7 +11,14 @@ export function AppRouter() {
         <AppLayout>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/friends" element={<FriendsPage />} />
+            <Route
+              path="/friends"
+              element={
+                <ProtectedRoute>
+                  <FriendsPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/profile"
               element={

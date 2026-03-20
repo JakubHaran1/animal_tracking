@@ -11,6 +11,9 @@ const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-green-700 text-lime-50" : "text-green-900 hover:bg-lime-200",
   ].join(" ");
 
+const disabledNavLinkClassName =
+  "cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-green-400 opacity-70";
+
 export function Navbar({ isAuthenticated, onAuthToggle }: NavbarProps) {
   return (
     <header className="sticky top-0 z-20 border-b border-green-200 bg-lime-100/95 backdrop-blur">
@@ -23,12 +26,20 @@ export function Navbar({ isAuthenticated, onAuthToggle }: NavbarProps) {
           <NavLink to="/" className={navLinkClassName} end>
             Mapa
           </NavLink>
-          <NavLink to="/friends" className={navLinkClassName}>
-            Znajomi
-          </NavLink>
-          <NavLink to="/profile" className={navLinkClassName}>
-            Mój profil
-          </NavLink>
+          {isAuthenticated ? (
+            <NavLink to="/friends" className={navLinkClassName}>
+              Znajomi
+            </NavLink>
+          ) : (
+            <span className={disabledNavLinkClassName}>Znajomi</span>
+          )}
+          {isAuthenticated ? (
+            <NavLink to="/profile" className={navLinkClassName}>
+              Mój profil
+            </NavLink>
+          ) : (
+            <span className={disabledNavLinkClassName}>Mój profil</span>
+          )}
         </nav>
 
         <button
