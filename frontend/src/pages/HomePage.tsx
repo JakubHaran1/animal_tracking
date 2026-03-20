@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AddObservationModal, MapPlaceholder, ObservationDraft } from "../components";
 import { useAuth } from "../context/AuthContext";
-import { observationsService } from "../services";
+import { friendsService, observationsService } from "../services";
 import { Observation } from "../types";
 
 export function HomePage() {
@@ -10,19 +10,41 @@ export function HomePage() {
   const [isAddObservationOpen, setIsAddObservationOpen] = useState(false);
 
   useEffect(() => {
-    observationsService.getObservations().then(setObservations);
-  }, []);
+    if (!isAuthenticated) {
+      observationsService.getObservations().then(setObservations);
+      return;
+    }
 
-  const handleAddObservation = (draft: ObservationDraft) => {
-    const newObservation: Observation = {
-      id: `local-${Date.now()}`,
-      species: draft.title,
-      latitude: 0,
-      longitude: 0,
-      createdAt: new Date().toISOString(),
-    };
+    friendsService
+      .getFriendIds()
+      .then((friendIds) => observationsService.getObservationsByUserIds(friendIds))
+      .then(setObservations);
+  }, [isAuthenticated]);
 
-    setObservations((current) => [newObservation, ...current]);
+  const parseLocation = (location: string) => {
+    const [latitudeRaw, longitudeRaw] = location.split(",").map((value) => value.trim());
+    const latitude = Number(latitudeRaw);
+    const longitude = Number(longitudeRaw);
+
+    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+      return { latitude, longitude };
+    }
+
+    return { latitude: 0, longitude: 0 };
+  };
+
+  const handleAddObservation = async (draft: ObservationDraft) => {
+    const { latitude, longitude } = parseLocation(draft.location);
+    const createdObservation = await observationsService.createObservation({
+      userId: "u-1",
+      speciesId: 1,
+      title: draft.title,
+      description: draft.description,
+      latitude,
+      longitude,
+    });
+
+    setObservations((current) => [createdObservation, ...current]);
   };
 
   return (
