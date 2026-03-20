@@ -4,7 +4,6 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   logIn: () => void;
   logOut: () => void;
-  toggleAuth: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -21,7 +20,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isAuthenticated,
       logIn: () => setIsAuthenticated(true),
       logOut: () => setIsAuthenticated(false),
-      toggleAuth: () => setIsAuthenticated((current) => !current),
     }),
     [isAuthenticated],
   );

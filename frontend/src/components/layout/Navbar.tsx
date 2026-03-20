@@ -2,7 +2,8 @@ import { NavLink } from "react-router-dom";
 
 interface NavbarProps {
   isAuthenticated: boolean;
-  onAuthToggle: () => void;
+  onLoginClick: () => void;
+  onLogoutClick: () => void;
 }
 
 const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
@@ -14,7 +15,11 @@ const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
 const disabledNavLinkClassName =
   "cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-green-400 opacity-70";
 
-export function Navbar({ isAuthenticated, onAuthToggle }: NavbarProps) {
+export function Navbar({
+  isAuthenticated,
+  onLoginClick,
+  onLogoutClick,
+}: NavbarProps) {
   return (
     <header className="sticky top-0 z-20 border-b border-green-200 bg-lime-100/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3">
@@ -44,7 +49,7 @@ export function Navbar({ isAuthenticated, onAuthToggle }: NavbarProps) {
 
         <button
           type="button"
-          onClick={onAuthToggle}
+          onClick={isAuthenticated ? onLogoutClick : onLoginClick}
           className="rounded-md bg-amber-400 px-4 py-2 text-sm font-semibold text-green-950 transition hover:bg-amber-300"
         >
           {isAuthenticated ? "Wyloguj" : "Logowanie / Rejestracja"}
