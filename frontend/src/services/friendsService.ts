@@ -8,6 +8,10 @@ export const friendsService = {
     return Promise.resolve([...localFriends]);
   },
 
+  async getFriendIds(): Promise<string[]> {
+    return Promise.resolve(localFriends.map((friend) => friend.id));
+  },
+
   async removeFriend(friendId: string): Promise<Friend[]> {
     localFriends = localFriends.filter((friend) => friend.id !== friendId);
     return Promise.resolve([...localFriends]);
