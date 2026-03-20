@@ -12,7 +12,7 @@ export function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
+      <div className="rounded-xl border border-green-200 bg-lime-50 p-6 text-sm text-green-800 shadow-sm">
         Ładowanie profilu...
       </div>
     );

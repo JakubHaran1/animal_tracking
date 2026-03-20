@@ -23,9 +23,9 @@ export function FriendsPage() {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">Znajomi</h1>
-        <p className="text-sm text-slate-600">Lista znajomych i podstawowe akcje.</p>
+      <div className="rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm">
+        <h1 className="text-xl font-semibold text-green-900">Znajomi</h1>
+        <p className="text-sm text-green-800">Lista znajomych i podstawowe akcje.</p>
       </div>
       <FriendsList
         friends={friends}
