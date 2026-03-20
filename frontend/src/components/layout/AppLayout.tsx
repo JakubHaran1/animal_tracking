@@ -34,7 +34,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         onLoginClick={handleOpenLogin}
         onLogoutClick={logOut}
       />
-      <main className="mx-auto w-full max-w-6xl px-4 py-6">{children}</main>
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 xl:px-6 2xl:max-w-[1800px] 2xl:px-8 2xl:py-8">
+        {children}
+      </main>
       <AuthModal
         isOpen={isAuthModalOpen}
         view={authView}

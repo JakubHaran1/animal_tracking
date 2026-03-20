@@ -7,3 +7,9 @@ body {
 #root {
 	@apply min-h-screen;
 }
+
+@media (min-width: 1920px) {
+	html {
+		font-size: 18px;
+	}
+}
