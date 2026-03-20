@@ -24,7 +24,7 @@ export function Navbar({
     <header className="sticky top-0 z-20 border-b border-green-200 bg-lime-100/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold text-green-900">GeoApp</span>
+          <span className="text-lg font-semibold text-green-900">Animal Tracking</span>
         </div>
 
         <nav className="flex items-center gap-1">
