@@ -3,7 +3,7 @@ import { Friend } from "../../types";
 interface FriendsListProps {
   friends: Friend[];
   onRemove: (friendId: string) => void;
-  onOpenProfile: () => void;
+  onOpenProfile: (friendId: string) => void;
 }
 
 export function FriendsList({ friends, onRemove, onOpenProfile }: FriendsListProps) {
@@ -32,7 +32,7 @@ export function FriendsList({ friends, onRemove, onOpenProfile }: FriendsListPro
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => onOpenProfile()}
+              onClick={() => onOpenProfile(friend.id)}
               className="rounded-md bg-green-700 px-3 py-2 text-sm font-medium text-lime-50 transition hover:bg-green-600"
             >
               Przejdź do profilu

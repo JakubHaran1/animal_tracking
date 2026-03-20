@@ -17,8 +17,8 @@ export function FriendsPage() {
     setFriends(updatedFriends);
   };
 
-  const handleOpenProfile = () => {
-    navigate("/profile");
+  const handleOpenProfile = (friendId: string) => {
+    navigate(`/friends/${friendId}/profile`);
   };
 
   return (
