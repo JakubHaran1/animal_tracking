@@ -2,6 +2,13 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.fields import DecimalField, CharField
 from rest_framework.exceptions import ValidationError
 
+
+from django.core.files.base import ContentFile
+
+from PIL import Image
+import io
+import os
+
 from api.models import User, SpeciesModel, ObservationModel
 
 
@@ -58,7 +65,20 @@ class ObservationSerializer(ModelSerializer):
         species_data = validated_data.pop("species")
         species_obj, _ = SpeciesModel.objects.get_or_create(
             **species_data)
+
+        img = validated_data["img"]
+        img_name, ext = os.path.splitext(img.name)
+        new_name = img_name + '_thumbnail.webp'
+        print(new_name)
+        with Image.open(img) as im:
+            im.thumbnail((300, 300))
+            bufor = io.BytesIO()
+            im.save(bufor, 'webp')
+            print("im", im)
+        img_new = ContentFile(bufor.getvalue(), new_name)
+        validated_data["img"] = img_new
+
         observation = ObservationModel.objects.create(
             species=species_obj, **validated_data)
-
         return observation
+  
