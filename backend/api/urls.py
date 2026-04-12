@@ -9,7 +9,7 @@ from .views.ObservationsViews import ObservationViewSet, SpeciesViewSet, UserVie
 urlpatterns = [
 
 
-]
+] 
 
 # Router dla observations
 Router = DefaultRouter()
