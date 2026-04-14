@@ -1,5 +1,10 @@
 import { FormEvent } from "react";
-
+import {
+  fetchAuthData,
+  fetchData,
+  login,
+  refreshAccessToken,
+} from "../../helpers";
 type AuthModalView = "login" | "register";
 
 interface AuthModalProps {
@@ -72,6 +77,75 @@ export function AuthModal({
             >
               Zaloguj
             </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                const observations = await fetchData(
+                  "http://127.0.0.1:8000/api/observations/",
+                  "GET",
+                );
+                console.log(observations);
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              Data test
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                const observations = await login({
+                  username: "admin",
+                  password: "admin",
+                });
+                console.log(observations);
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              Login test
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                const observations = await refreshAccessToken();
+                console.log(observations);
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              Refresh test
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                localStorage.clear();
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              Clear
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                localStorage.removeItem("refresh");
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              clear refresh
+            </button>
+            <button
+              onClick={async (e) => {
+                e.preventDefault();
+                fetchAuthData("http://127.0.0.1:8000/api/users/me/", "GET");
+              }}
+              type="submit"
+              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+            >
+              Auth data test
+            </button>
             <p className="text-sm text-green-800">
               nie masz konta?{" "}
               <button
@@ -112,6 +186,7 @@ export function AuthModal({
             >
               Załóż konto (wkrótce)
             </button>
+
             <p className="text-sm text-green-800">
               masz już konto?{" "}
               <button

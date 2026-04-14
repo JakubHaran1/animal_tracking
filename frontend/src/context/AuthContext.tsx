@@ -1,7 +1,8 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-
+import type { User } from "../types";
 interface AuthContextValue {
-  isAuthenticated: boolean;
+  isAuthenticated: boolean; // to bym wywalił i sprawdzał undefined
+  user: User | undefined;
   logIn: () => void;
   logOut: () => void;
 }
@@ -18,6 +19,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated,
+      user: undefined,
       logIn: () => setIsAuthenticated(true),
       logOut: () => setIsAuthenticated(false),
     }),
