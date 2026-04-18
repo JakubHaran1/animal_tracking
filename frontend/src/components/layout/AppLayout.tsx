@@ -8,7 +8,9 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
-  const { isAuthenticated, logIn, logOut } = useAuth();
+  // const { isAuthenticated, logIn, logOut } = useAuth();
+  const { isAuthenticated, logOut } = useAuth();
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authView, setAuthView] = useState<"login" | "register">("login");
 
@@ -22,7 +24,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   const handleLoginSuccess = () => {
-    logIn();
+    // logIn(); trzeba przekazac dane usera, chyba lepiej dać do authmodal
     setIsAuthModalOpen(false);
     setAuthView("login");
   };

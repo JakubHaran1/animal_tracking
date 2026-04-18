@@ -1,10 +1,12 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import {
   fetchAuthData,
   fetchData,
-  login,
+  loginUser,
   refreshAccessToken,
 } from "../../helpers";
+import type { CredentialsType } from "./../../types";
+import { useAuth } from "../../context/AuthContext";
 type AuthModalView = "login" | "register";
 
 interface AuthModalProps {
@@ -28,8 +30,38 @@ export function AuthModal({
     return null;
   }
 
-  const handleLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const { logIn } = useAuth();
+  const [loginData, setLoginData] = useState<CredentialsType>({
+    username: undefined,
+    password: "",
+  });
+  const [errors, setErrors] = useState<string | undefined>(undefined);
+
+  const handleInputChange = <K extends keyof CredentialsType>(
+    name: K,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const { value } = e.target;
+    setLoginData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLoginSubmit = async (event: React.SubmitEvent<HTMLElement>) => {
     event.preventDefault();
+    if (!loginData.username && !loginData.password) {
+      console.log("credentials error");
+      return;
+    }
+    const loginResponse = await loginUser(loginData);
+    console.log(loginResponse);
+    if (!loginResponse.ok) {
+      const error = loginResponse.data.detail;
+      setErrors(error);
+      return;
+    }
+    logIn(loginResponse.data.user);
+
+    // co z tym on login success
     onLoginSuccess();
   };
 
@@ -55,18 +87,25 @@ export function AuthModal({
 
         {view === "login" ? (
           <form className="space-y-4" onSubmit={handleLoginSubmit}>
-            <label className="block text-sm text-green-900">
-              Email
+            <h3 className="text-center">{errors}</h3>
+            <label htmlFor="Username" className="block text-sm text-green-900">
+              Username
               <input
-                type="email"
+                id="Username"
+                name="Username"
+                type="Username"
+                onChange={(e) => handleInputChange("username", e)}
                 required
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />
             </label>
-            <label className="block text-sm text-green-900">
+            <label htmlFor="password" className="block text-sm text-green-900">
               Hasło
               <input
+                id="password"
+                name="password"
                 type="password"
+                onChange={(e) => handleInputChange("password", e)}
                 required
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />
@@ -77,75 +116,76 @@ export function AuthModal({
             >
               Zaloguj
             </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                const observations = await fetchData(
-                  "http://127.0.0.1:8000/api/observations/",
-                  "GET",
-                );
-                console.log(observations);
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              Data test
-            </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                const observations = await login({
-                  username: "admin",
-                  password: "admin",
-                });
-                console.log(observations);
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              Login test
-            </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                const observations = await refreshAccessToken();
-                console.log(observations);
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              Refresh test
-            </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                localStorage.clear();
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              Clear
-            </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                localStorage.removeItem("refresh");
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              clear refresh
-            </button>
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                fetchAuthData("http://127.0.0.1:8000/api/users/me/", "GET");
-              }}
-              type="submit"
-              className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-            >
-              Auth data test
-            </button>
+            <div className="test">
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const observations = await fetchData(
+                    "http://127.0.0.1:8000/api/observations/",
+                    "GET",
+                  );
+                  console.log(observations);
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                Data test
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const observations = await loginUser({
+                    username: "admin@wp.pl",
+                    password: "admin",
+                  });
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                Login test
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const observations = await refreshAccessToken();
+                  console.log(observations);
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                Refresh test
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  localStorage.clear();
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                Clear
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  localStorage.removeItem("refresh");
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                clear refresh
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  fetchAuthData("http://127.0.0.1:8000/api/users/me/", "GET");
+                }}
+                type="submit"
+                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
+              >
+                Auth data test
+              </button>
+            </div>
             <p className="text-sm text-green-800">
               nie masz konta?{" "}
               <button
@@ -159,23 +199,29 @@ export function AuthModal({
           </form>
         ) : (
           <form className="space-y-4" onSubmit={handleRegisterSubmit}>
-            <label className="block text-sm text-green-900">
+            <label htmlFor="username" className="block text-sm text-green-900">
               Nazwa użytkownika
               <input
+                id="username"
+                name="username"
                 type="text"
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />
             </label>
-            <label className="block text-sm text-green-900">
+            <label htmlFor="email" className="block text-sm text-green-900">
               Email
               <input
+                id="username"
+                name="email"
                 type="email"
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />
             </label>
-            <label className="block text-sm text-green-900">
+            <label htmlFor="password" className="block text-sm text-green-900">
               Hasło
               <input
+                id="password"
+                name="password"
                 type="password"
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />

@@ -23,14 +23,18 @@ class UserViewSet(ModelViewSet):
     def login(self,request):
         username = request.data.get("username")
         password = request.data.get("password")
-        user = authenticate(username=username,password = password)
+        user = authenticate(username=username,password=password)
+   
         if user is  None:
             raise  AuthenticationFailed("Provided credentials aren't correct")
 
         token = RefreshToken.for_user(user)
         return Response( {
-            "refresh":str(token),
-            "access":str(token.access_token),
+            "tokens":{
+                "refresh":str(token),
+                "access":str(token.access_token),
+                },
+           
             "user":UserSerializer(user).data
         }
         )

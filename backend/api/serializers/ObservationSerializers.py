@@ -23,7 +23,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email',]
+        fields = ['username', 'email','observations']
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -62,6 +62,7 @@ class ObservationSerializer(ModelSerializer):
     def create(self, validated_data):
         # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
         # w celach ćwiczebnych
+        # pobiera species data od usera i pobiera z bazy danych objekt species lub go tworzy 
         species_data = validated_data.pop("species")
         species_obj, _ = SpeciesModel.objects.get_or_create(
             **species_data)
@@ -75,10 +76,12 @@ class ObservationSerializer(ModelSerializer):
             bufor = io.BytesIO()
             im.save(bufor, 'webp')
             print("im", im)
+
         img_new = ContentFile(bufor.getvalue(), new_name)
         validated_data["img"] = img_new
 
         observation = ObservationModel.objects.create(
             species=species_obj, **validated_data)
+        
         return observation
   

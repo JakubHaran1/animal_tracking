@@ -1,9 +1,11 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+
 import type { User } from "../types";
+
 interface AuthContextValue {
-  isAuthenticated: boolean; // to bym wywalił i sprawdzał undefined
+  isAuthenticated: boolean; // to bym wywalił i sprawdzał po user undefinded
   user: User | undefined;
-  logIn: () => void;
+  logIn: (userData: User) => void;
   logOut: () => void;
 }
 
@@ -14,14 +16,21 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated,
-      user: undefined,
-      logIn: () => setIsAuthenticated(true),
-      logOut: () => setIsAuthenticated(false),
+      user: user,
+      logIn: (userData: User) => {
+        setUser(userData);
+        setIsAuthenticated(true);
+      },
+      logOut: () => {
+        setUser(undefined);
+        setIsAuthenticated(false);
+      },
     }),
     [isAuthenticated],
   );

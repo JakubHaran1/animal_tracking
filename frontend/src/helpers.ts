@@ -1,4 +1,4 @@
-import type { User } from "./types";
+import type { User, CredentialsType } from "./types";
 
 interface ApiResponse<T> {
   status: number;
@@ -8,16 +8,13 @@ interface ApiResponse<T> {
   requiresAuth?: boolean;
 }
 
-interface CredentialsType {
-  username: string;
-  password: string;
+interface LoginResponse {
+  tokens: { refresh: string; access: string };
+  user: User;
+  detail?: string;
 }
 
-interface TokensType {
-  refresh: string;
-  access: string;
-}
-
+// ustawic handling errorow
 async function fetchData<T>(
   url: string,
   method: string,
@@ -25,6 +22,7 @@ async function fetchData<T>(
   headers?: HeadersInit,
 ): Promise<ApiResponse<T>> {
   let responseData: T | undefined;
+
   try {
     const response = await fetch(url, {
       headers: { ...headers, "Content-Type": "application/json" },
@@ -46,12 +44,7 @@ async function fetchData<T>(
     };
   } catch (error) {
     const err = error as Error;
-    console.log({
-      status: 404,
-      statusText: err.message,
-      ok: false,
-      data: responseData as T,
-    });
+
     return {
       status: 404,
       statusText: err.message,
@@ -61,28 +54,35 @@ async function fetchData<T>(
   }
 }
 
-async function login(data: CredentialsType) {
-  const response = await fetchData<TokensType>(
+async function loginUser(
+  data: CredentialsType,
+): Promise<ApiResponse<LoginResponse>> {
+  const response = await fetchData<LoginResponse>(
     "http://127.0.0.1:8000/api/users/login/",
     "POST",
     data,
   );
-  if (!response.ok) {
-    return undefined;
+  if (response.ok) {
+    console.log(response);
+    localStorage.setItem("access", response.data.tokens.access);
+    localStorage.setItem("refresh", response.data.tokens.refresh);
   }
-
-  localStorage.setItem("access", response.data.access);
-  localStorage.setItem("refresh", response.data.refresh);
-
   console.log(response);
+  return {
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
+    data: response.data,
+  };
 }
 
+// ustawic handling errorow - razem z auth
 async function refreshAccessToken() {
   const refresh = localStorage.getItem("refresh");
 
   if (!refresh) {
     console.log("Login popup");
-    return null;
+    return undefined;
   }
   const response = await fetchData<string>(
     "http://127.0.0.1:8000/api/token/refresh/",
@@ -92,13 +92,14 @@ async function refreshAccessToken() {
 
   if (!response.ok) {
     console.log("something goes wrong", response.statusText);
-    return null;
+    return undefined;
   }
 
   localStorage.setItem("refresh", response.data);
   return response.data;
 }
 
+// ustawic handling errorow - razem z refreshem
 async function fetchAuthData<T>(
   url: string,
   method: string,
@@ -129,7 +130,7 @@ async function fetchAuthData<T>(
       statusText: response.statusText,
       ok: response.ok,
       data: response.data as T,
-      requiresAuth: true,
+      requiresAuth: true, //nie pamiętam po co to dałem
     };
   }
 
@@ -143,4 +144,4 @@ async function fetchAuthData<T>(
   };
 }
 
-export { fetchData, login, refreshAccessToken, fetchAuthData };
+export { fetchData, loginUser, refreshAccessToken, fetchAuthData };

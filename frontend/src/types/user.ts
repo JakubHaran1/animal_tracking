@@ -7,4 +7,5 @@ export interface User {
   city: string;
   joinedAt: string;
   publications: Publication[];
+  // wywaliłbym to publications bo będzie obciążać bez potrzeby - będzie trzeba przechowywać obserwacje a i tak zrobimy osobny request/podstrone
 }
