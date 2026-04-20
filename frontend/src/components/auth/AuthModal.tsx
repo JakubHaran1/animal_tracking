@@ -1,14 +1,14 @@
 import { FormEvent, useState } from "react";
-import {
-  fetchAuthData,
-  fetchData,
-  loginUser,
-  refreshAccessToken,
-} from "../../helpers";
+
 import type { CredentialsType } from "./../../types";
 import { useAuth } from "../../context/AuthContext";
-type AuthModalView = "login" | "register";
 
+import { isAxiosError } from "axios";
+import { getData } from "../../api/publicApi";
+import { authService } from "../../services/authService";
+import { getDataAuth } from "../../api/privateApi";
+
+type AuthModalView = "login" | "register";
 interface AuthModalProps {
   isOpen: boolean;
   view: AuthModalView;
@@ -33,7 +33,7 @@ export function AuthModal({
   const { logIn } = useAuth();
   const [loginData, setLoginData] = useState<CredentialsType>({
     username: undefined,
-    password: "",
+    password: undefined,
   });
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
@@ -49,20 +49,22 @@ export function AuthModal({
   const handleLoginSubmit = async (event: React.SubmitEvent<HTMLElement>) => {
     event.preventDefault();
     if (!loginData.username && !loginData.password) {
-      console.log("credentials error");
+      setErrors("You have to pass username and password");
       return;
     }
-    const loginResponse = await loginUser(loginData);
-    console.log(loginResponse);
-    if (!loginResponse.ok) {
-      const error = loginResponse.data.detail;
-      setErrors(error);
-      return;
-    }
-    logIn(loginResponse.data.user);
 
-    // co z tym on login success
-    onLoginSuccess();
+    try {
+      const loginResponse = await authService.loginUser(loginData);
+      logIn(loginResponse.user);
+      onLoginSuccess();
+    } catch (err) {
+      console.log(isAxiosError(err));
+      if (isAxiosError(err)) {
+        setErrors(err.response?.data.detail);
+        return;
+      }
+      setErrors("err.response?.data.detail;");
+    }
   };
 
   const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -118,13 +120,21 @@ export function AuthModal({
             </button>
             <div className="test">
               <button
+                /* To będzie oddzielnie w serwisie, teraz testowo tu */
                 onClick={async (e) => {
                   e.preventDefault();
-                  const observations = await fetchData(
-                    "http://127.0.0.1:8000/api/observations/",
-                    "GET",
-                  );
-                  console.log(observations);
+                  try {
+                    const observations = await getData("/observati=ons/");
+
+                    console.log(observations);
+                  } catch (err) {
+                    if (!isAxiosError(err)) {
+                      console.log(err);
+                      return;
+                    }
+                    console.log(err.response?.status);
+                    console.log(err.response?.statusText);
+                  }
                 }}
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
@@ -134,27 +144,29 @@ export function AuthModal({
               <button
                 onClick={async (e) => {
                   e.preventDefault();
-                  const observations = await loginUser({
-                    username: "admin@wp.pl",
-                    password: "admin",
-                  });
+                  try {
+                    const observations = await authService.loginUser({
+                      username: "admin",
+                      password: "admin",
+                    });
+
+                    console.log(observations);
+                  } catch (err) {
+                    if (!isAxiosError(err)) {
+                      console.log(err);
+                      return;
+                    }
+                    console.log(err.response?.status);
+                    console.log(err.response?.statusText);
+                    console.log(err.response?.data);
+                  }
                 }}
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
               >
-                Login test
+                login Test
               </button>
-              <button
-                onClick={async (e) => {
-                  e.preventDefault();
-                  const observations = await refreshAccessToken();
-                  console.log(observations);
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                Refresh test
-              </button>
+
               <button
                 onClick={async (e) => {
                   e.preventDefault();
@@ -168,22 +180,33 @@ export function AuthModal({
               <button
                 onClick={async (e) => {
                   e.preventDefault();
-                  localStorage.removeItem("refresh");
+                  localStorage.removeItem("access");
                 }}
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
               >
-                clear refresh
+                clear access
               </button>
               <button
+                /* To będzie oddzielnie w serwisie, teraz testowo tu */
                 onClick={async (e) => {
                   e.preventDefault();
-                  fetchAuthData("http://127.0.0.1:8000/api/users/me/", "GET");
+                  try {
+                    const observations = await getDataAuth("/users/me/");
+                    console.log(observations);
+                  } catch (err) {
+                    if (!isAxiosError(err)) {
+                      console.log(err);
+                      return;
+                    }
+                    console.log(err.response?.status);
+                    console.log(err.response?.statusText);
+                  }
                 }}
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
               >
-                Auth data test
+                auth data test
               </button>
             </div>
             <p className="text-sm text-green-800">

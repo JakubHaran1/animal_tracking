@@ -9,11 +9,10 @@ interface AuthContextValue {
   logOut: () => void;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
 interface AuthProviderProps {
   children: ReactNode;
 }
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | undefined>(undefined);
