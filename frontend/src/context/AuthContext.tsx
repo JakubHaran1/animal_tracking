@@ -1,6 +1,14 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 
 import type { User } from "../types";
+import { authService } from "../services/authService";
 
 interface AuthContextValue {
   isAuthenticated: boolean; // to bym wywalił i sprawdzał po user undefinded
@@ -18,6 +26,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Login on refresh
+  useEffect(() => {
+    async function init() {
+      const accessToken = localStorage.getItem("access");
+      if (!accessToken) return;
+      try {
+        const user = await authService.getUser();
+        setUser(user);
+        setIsAuthenticated(true);
+      } catch {
+        console.log("nie mozna zalogowac usera");
+      }
+    }
+    init();
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated,
@@ -28,6 +52,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       },
       logOut: () => {
         setUser(undefined);
+        localStorage.clear();
         setIsAuthenticated(false);
       },
     }),

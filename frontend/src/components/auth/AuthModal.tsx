@@ -54,8 +54,9 @@ export function AuthModal({
     }
 
     try {
-      const loginResponse = await authService.loginUser(loginData);
-      logIn(loginResponse.user);
+      await authService.loginUser(loginData);
+      const userResponse = await authService.getUser();
+      logIn(userResponse);
       onLoginSuccess();
     } catch (err) {
       console.log(isAxiosError(err));
@@ -63,7 +64,7 @@ export function AuthModal({
         setErrors(err.response?.data.detail);
         return;
       }
-      setErrors("err.response?.data.detail;");
+      setErrors("Something goes wrong");
     }
   };
 
@@ -141,52 +142,7 @@ export function AuthModal({
               >
                 Data test
               </button>
-              <button
-                onClick={async (e) => {
-                  e.preventDefault();
-                  try {
-                    const observations = await authService.loginUser({
-                      username: "admin",
-                      password: "admin",
-                    });
 
-                    console.log(observations);
-                  } catch (err) {
-                    if (!isAxiosError(err)) {
-                      console.log(err);
-                      return;
-                    }
-                    console.log(err.response?.status);
-                    console.log(err.response?.statusText);
-                    console.log(err.response?.data);
-                  }
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                login Test
-              </button>
-
-              <button
-                onClick={async (e) => {
-                  e.preventDefault();
-                  localStorage.clear();
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                Clear
-              </button>
-              <button
-                onClick={async (e) => {
-                  e.preventDefault();
-                  localStorage.removeItem("access");
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                clear access
-              </button>
               <button
                 /* To będzie oddzielnie w serwisie, teraz testowo tu */
                 onClick={async (e) => {

@@ -20,6 +20,7 @@ privateApi.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 privateApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
+    // Musi byc any aby dodac zmienna, chyba zeby jakos extendować type
     const originalRequest: any = error.config;
 
     if (
