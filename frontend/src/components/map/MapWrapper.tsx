@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import { CoordsType } from "../../types";
+import LocationMarker from "./LocationMarker";
 export default function MapWrapper() {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
   useEffect(() => {
@@ -8,13 +9,15 @@ export default function MapWrapper() {
       (geolocation: GeolocationPosition) => {
         const { latitude, longitude } = geolocation.coords;
         setCoords({ latitude, longitude });
-        console.log(geolocation.coords);
-        console.log(latitude);
+
+        // console.log(geolocation.coords);
+        // console.log(latitude);
       },
     );
   }, []);
+
   return (
-    <section className=" w-full h-full">
+    <section className=" w-full h-full relative z-0">
       {coords ? (
         <MapContainer
           center={[coords?.latitude, coords?.longitude]}
@@ -26,11 +29,7 @@ export default function MapWrapper() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[51.505, -0.09]}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
+          <LocationMarker />
         </MapContainer>
       ) : (
         <p>fake is loading...</p>
