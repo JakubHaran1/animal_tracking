@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { CoordsType } from "../../types";
 import LocationMarker from "./LocationMarker";
-export default function MapWrapper() {
+import { CoordsType } from "../../types";
+
+export default function MapWrapper({
+  canAddObservation,
+  handleMapClick,
+}: {
+  canAddObservation: boolean;
+  handleMapClick: (coords: CoordsType) => void;
+}) {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -15,9 +22,8 @@ export default function MapWrapper() {
       },
     );
   }, []);
-
   return (
-    <section className=" w-full h-full relative z-0">
+    <section className="h-full w-full">
       {coords ? (
         <MapContainer
           center={[coords?.latitude, coords?.longitude]}
@@ -29,7 +35,9 @@ export default function MapWrapper() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <LocationMarker />
+          {canAddObservation && (
+            <LocationMarker handleMapClick={handleMapClick} />
+          )}
         </MapContainer>
       ) : (
         <p>fake is loading...</p>

@@ -9,7 +9,8 @@ export interface Observation {
   speciesId: number;
   title: string;
   description: string;
-  coords: CoordsType;
+  latitude: number;
+  longitude: number;
   createdAt: string;
 }
 
@@ -18,5 +19,6 @@ export interface CreateObservationPayload {
   speciesId: number;
   title: string;
   description: string;
-  coords: CoordsType;
+  latitude: number;
+  longitude: number;
 }
