@@ -3,6 +3,11 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import LocationMarker from "./LocationMarker";
 import { CoordsType } from "../../types";
 
+const DEFAULT_MAP_COORDS: CoordsType = {
+  latitude: 52.2297,
+  longitude: 21.0122,
+};
+
 export default function MapWrapper({
   canAddObservation,
   handleMapClick,
@@ -11,17 +16,24 @@ export default function MapWrapper({
   handleMapClick: (coords: CoordsType) => void;
 }) {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
+
   useEffect(() => {
+    if (!navigator.geolocation) {
+      setCoords(DEFAULT_MAP_COORDS);
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
       (geolocation: GeolocationPosition) => {
         const { latitude, longitude } = geolocation.coords;
         setCoords({ latitude, longitude });
-
-        // console.log(geolocation.coords);
-        // console.log(latitude);
+      },
+      () => {
+        setCoords(DEFAULT_MAP_COORDS);
       },
     );
   }, []);
+
   return (
     <section className="h-full w-full">
       {coords ? (
