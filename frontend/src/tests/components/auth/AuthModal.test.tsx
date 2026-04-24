@@ -1,6 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AuthModal } from "../../../components/auth/AuthModal";
+import { AuthProvider } from "../../../context/AuthContext";
+import { authService } from "../../../services/authService";
+
+vi.mock("../../../services/authService", () => ({
+  authService: {
+    loginUser: vi.fn(),
+    getUser: vi.fn(),
+  },
+}));
 
 function createProps(overrides?: Partial<React.ComponentProps<typeof AuthModal>>) {
   return {
@@ -14,9 +23,27 @@ function createProps(overrides?: Partial<React.ComponentProps<typeof AuthModal>>
   };
 }
 
+function renderWithProvider(component: React.ReactNode) {
+  return render(<AuthProvider>{component}</AuthProvider>);
+}
+
 describe("AuthModal", () => {
+  beforeEach(() => {
+    vi.mocked(authService.loginUser).mockResolvedValue({
+      tokens: { access: "access-token", refresh: "refresh-token" },
+    });
+    vi.mocked(authService.getUser).mockResolvedValue({
+      id: "1",
+      username: "user",
+      email: "user@example.com",
+      city: "Krakow",
+      joinedAt: "2024-01-01",
+      publications: [],
+    });
+  });
+
   it("does not render when closed", () => {
-    render(<AuthModal {...createProps({ isOpen: false })} />);
+    renderWithProvider(<AuthModal {...createProps({ isOpen: false })} />);
 
     expect(screen.queryByText("Logowanie")).not.toBeInTheDocument();
   });
@@ -25,12 +52,14 @@ describe("AuthModal", () => {
     const user = userEvent.setup();
     const props = createProps({ view: "login" });
 
-    render(<AuthModal {...props} />);
+    renderWithProvider(<AuthModal {...props} />);
 
-    await user.type(screen.getByLabelText("Email"), "user@example.com");
+    await user.type(screen.getByLabelText("Username"), "user@example.com");
     await user.type(screen.getByLabelText("Hasło"), "password");
     await user.click(screen.getByRole("button", { name: "Zaloguj" }));
 
+    expect(authService.loginUser).toHaveBeenCalledTimes(1);
+    expect(authService.getUser).toHaveBeenCalledTimes(1);
     expect(props.onLoginSuccess).toHaveBeenCalledTimes(1);
   });
 
@@ -38,7 +67,7 @@ describe("AuthModal", () => {
     const user = userEvent.setup();
     const props = createProps({ view: "login" });
 
-    render(<AuthModal {...props} />);
+    renderWithProvider(<AuthModal {...props} />);
 
     await user.click(screen.getByRole("button", { name: "zarejestruj" }));
 
@@ -49,7 +78,7 @@ describe("AuthModal", () => {
     const user = userEvent.setup();
     const props = createProps({ view: "register" });
 
-    render(<AuthModal {...props} />);
+    renderWithProvider(<AuthModal {...props} />);
 
     expect(screen.getByText("Rejestracja")).toBeInTheDocument();
 
