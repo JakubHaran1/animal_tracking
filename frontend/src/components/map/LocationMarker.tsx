@@ -1,22 +1,15 @@
-import { useState } from "react";
 import { Marker, Popup, useMapEvents } from "react-leaflet";
-import { LatLng } from "leaflet";
-import { CoordsType } from "../../types";
 
-export default function LocationMarker({
-  handleMapClick,
-}: {
-  handleMapClick: (coords: CoordsType) => void;
-}) {
-  const [position, setPosition] = useState<LatLng | null>(null);
+import { useObservationContext } from "../../context/ObservationContext";
+
+export default function LocationMarker() {
+  const { handleMapClick, activeObservationCoords, activeMarker } =
+    useObservationContext();
+
   const map = useMapEvents({
     click(clickEv) {
-      setPosition(clickEv.latlng);
       map.locate();
-      handleMapClick({
-        latitude: clickEv.latlng.lat,
-        longitude: clickEv.latlng.lng,
-      });
+      handleMapClick(clickEv.latlng);
     },
     locationfound(e) {
       console.log(e.latlng);
@@ -24,8 +17,14 @@ export default function LocationMarker({
     },
   });
 
-  return position === null ? null : (
-    <Marker position={position}>
+  return activeObservationCoords === null ? null : (
+    <Marker
+      position={[
+        activeObservationCoords.latitude,
+        activeObservationCoords.longitude,
+      ]}
+      ref={activeMarker}
+    >
       <Popup>You are here</Popup>
     </Marker>
   );

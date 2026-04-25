@@ -32,7 +32,10 @@ privateApi.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem("refresh");
         if (!refreshToken) return Promise.reject(error);
-
+        console.log(
+          "test refresh-access - old:",
+          localStorage.getItem("access"),
+        );
         const { access } = await postData<{ access: string }>(
           "/token/refresh/",
           {
@@ -43,7 +46,10 @@ privateApi.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${access}`;
 
         localStorage.setItem("access", access);
-
+        console.log(
+          "test refresh-access - new:",
+          localStorage.getItem("access"),
+        );
         return privateApi(originalRequest);
       } catch (err) {
         localStorage.clear();

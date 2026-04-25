@@ -5,10 +5,8 @@ import { CoordsType } from "../../types";
 
 export default function MapWrapper({
   canAddObservation,
-  handleMapClick,
 }: {
   canAddObservation: boolean;
-  handleMapClick: (coords: CoordsType) => void;
 }) {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
   useEffect(() => {
@@ -16,9 +14,6 @@ export default function MapWrapper({
       (geolocation: GeolocationPosition) => {
         const { latitude, longitude } = geolocation.coords;
         setCoords({ latitude, longitude });
-
-        // console.log(geolocation.coords);
-        // console.log(latitude);
       },
     );
   }, []);
@@ -35,9 +30,7 @@ export default function MapWrapper({
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {canAddObservation && (
-            <LocationMarker handleMapClick={handleMapClick} />
-          )}
+          {canAddObservation && <LocationMarker />}
         </MapContainer>
       ) : (
         <p>fake is loading...</p>

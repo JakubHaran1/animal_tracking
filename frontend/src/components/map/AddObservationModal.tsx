@@ -1,29 +1,27 @@
 import { FormEvent, useState } from "react";
+import { useObservationContext } from "../../context/ObservationContext";
 
 export interface ObservationDraft {
   title: string;
   description: string;
-  location: string;
   imageName: string;
 }
 
 interface AddObservationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   onSubmit: (draft: ObservationDraft) => void;
 }
 
 const initialFormState: ObservationDraft = {
   title: "",
   description: "",
-  location: "",
   imageName: "",
 };
 
-export function AddObservationModal({ isOpen, onClose, onSubmit }: AddObservationModalProps) {
+export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
-
-  if (!isOpen) {
+  const { isAddObservationOpen, onCloseModal } = useObservationContext();
+  console.log(isAddObservationOpen);
+  if (!isAddObservationOpen) {
     return null;
   }
 
@@ -31,17 +29,19 @@ export function AddObservationModal({ isOpen, onClose, onSubmit }: AddObservatio
     event.preventDefault();
     onSubmit(form);
     setForm(initialFormState);
-    onClose();
+    onCloseModal();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-950/40 px-4">
       <div className="w-full max-w-xl rounded-2xl border border-green-200 bg-lime-50 p-6 shadow-xl">
         <div className="mb-4 flex items-start justify-between gap-4">
-          <h2 className="text-xl font-semibold text-green-900">Dodaj obserwację</h2>
+          <h2 className="text-xl font-semibold text-green-900">
+            Dodaj obserwację
+          </h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={onCloseModal}
             className="rounded-md px-2 py-1 text-sm font-medium text-green-700 hover:bg-lime-200"
           >
             Zamknij
@@ -55,7 +55,12 @@ export function AddObservationModal({ isOpen, onClose, onSubmit }: AddObservatio
               type="text"
               required
               value={form.title}
-              onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  title: event.target.value,
+                }))
+              }
               className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
             />
           </label>
@@ -66,24 +71,33 @@ export function AddObservationModal({ isOpen, onClose, onSubmit }: AddObservatio
               required
               value={form.description}
               onChange={(event) =>
-                setForm((current) => ({ ...current, description: event.target.value }))
+                setForm((current) => ({
+                  ...current,
+                  description: event.target.value,
+                }))
               }
               rows={4}
               className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
             />
           </label>
 
-          <label className="block text-sm text-green-900">
+          {/* Póki co rezygnujemy z lokalizacji w formie pola - moze potem reverse geolocation */}
+          {/* <label className="block text-sm text-green-900">
             Lokalizacja
             <input
               type="text"
               required
               placeholder="np. Kraków, Las Wolski"
               value={form.location}
-              onChange={(event) => setForm((current) => ({ ...current, location: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  location: event.target.value,
+                }))
+              }
               className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
             />
-          </label>
+          </label> */}
 
           <label className="block text-sm text-green-900">
             Zdjęcie
@@ -102,7 +116,8 @@ export function AddObservationModal({ isOpen, onClose, onSubmit }: AddObservatio
           </label>
 
           <p className="text-xs text-green-700">
-            Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do backendu.
+            Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
+            backendu.
           </p>
 
           <button
