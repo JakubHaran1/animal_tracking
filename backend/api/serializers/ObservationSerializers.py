@@ -47,7 +47,7 @@ class UserCreateSerializer(ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
-        # dodać confirm field i validate czy takie samo - frontend
+      
 
 
 class ObservationSerializer(ModelSerializer):
