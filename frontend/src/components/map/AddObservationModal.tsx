@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useObservationContext } from "../../context/ObservationContext";
+import ImageCropper from "../form/ImageCroppper";
 
 export interface ObservationDraft {
   title: string;
@@ -20,7 +21,7 @@ const initialFormState: ObservationDraft = {
 export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
   const { isAddObservationOpen, onCloseModal } = useObservationContext();
-  console.log(isAddObservationOpen);
+
   if (!isAddObservationOpen) {
     return null;
   }
@@ -34,7 +35,10 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-950/40 px-4">
-      <div className="w-full max-w-xl rounded-2xl border border-green-200 bg-lime-50 p-6 shadow-xl">
+      <div
+        className="w-full max-w-xl rounded-2xl border border-green-200 bg-lime-50 p-6 shadow-xl max-h-[90vh] overflow-y-scroll
+"
+      >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 className="text-xl font-semibold text-green-900">
             Dodaj obserwację
@@ -99,7 +103,7 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
             />
           </label> */}
 
-          <label className="block text-sm text-green-900">
+          {/* <label className="block text-sm text-green-900">
             Zdjęcie
             <input
               type="file"
@@ -113,8 +117,8 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
               }
               className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
             />
-          </label>
-
+          </label> */}
+          <ImageCropper />
           <p className="text-xs text-green-700">
             Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
             backendu.

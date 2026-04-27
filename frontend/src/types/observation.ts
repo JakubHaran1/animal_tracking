@@ -1,5 +1,3 @@
-import { LatLng } from "leaflet";
-
 export interface CoordsType {
   latitude: number;
   longitude: number;

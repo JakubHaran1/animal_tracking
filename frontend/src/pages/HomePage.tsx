@@ -18,7 +18,6 @@ export function HomePage() {
       observationsService.getObservations().then(setObservations);
       return;
     }
-
     friendsService
       .getFriendIds()
       .then((friendIds) =>
