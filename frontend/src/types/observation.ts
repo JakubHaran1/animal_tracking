@@ -22,3 +22,9 @@ export interface CreateObservationPayload {
   latitude: number;
   longitude: number;
 }
+
+export interface ObservationDraft {
+  title: string;
+  description: string;
+  url: string;
+}

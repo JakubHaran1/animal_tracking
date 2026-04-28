@@ -16,7 +16,7 @@ export const setCanvasPreview = ({
   if (!context) throw new Error("No 2d context");
 
   // określenie zagęszczenia pixeli na urządzeniu usera
-  // np. logicznie pixeli jest 100 a fizycznie 200
+  // np. logicznie pixeli jest 100 a fizycznie 200 - obrazy retina
   const pixelRatio = window.devicePixelRatio;
 
   // określenie skali w jakiej jest wyświetlane zdjęcie na urządzeniu usera
@@ -38,6 +38,8 @@ export const setCanvasPreview = ({
 
   // przesuwanie matryca
   context.translate(-cropX, -cropY);
+
+  // Rysuje obraz pod matryca
   context.drawImage(
     image,
     0,

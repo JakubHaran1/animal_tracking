@@ -2,11 +2,7 @@ import { FormEvent, useState } from "react";
 import { useObservationContext } from "../../context/ObservationContext";
 import ImageCropper from "../form/ImageCroppper";
 
-export interface ObservationDraft {
-  title: string;
-  description: string;
-  imageName: string;
-}
+import { ObservationDraft } from "../../types";
 
 interface AddObservationModalProps {
   onSubmit: (draft: ObservationDraft) => void;
@@ -15,7 +11,7 @@ interface AddObservationModalProps {
 const initialFormState: ObservationDraft = {
   title: "",
   description: "",
-  imageName: "",
+  url: "",
 };
 
 export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
@@ -26,11 +22,16 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
     return null;
   }
 
+  const handleImage = (data: string) => {
+    setForm((current) => ({ ...current, url: data }));
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(form);
-    setForm(initialFormState);
-    onCloseModal();
+    console.log(form);
+    // onSubmit(form);
+    // setForm(initialFormState);
+    // onCloseModal();
   };
 
   return (
@@ -91,6 +92,7 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
             aspectRatioWidth={2}
             aspectRatioHeight={1}
             maxContainerHeight="30vh"
+            setImgField={handleImage}
           />
           <p className="text-xs text-green-700">
             Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
