@@ -7,16 +7,27 @@ import ReactCrop, {
 import "react-image-crop/dist/ReactCrop.css";
 
 import { setCanvasPreview } from "./setCanvasProvider";
-const MIN_DIMENSION = 150;
-const ASPECT_RATIO = 1;
 
-export default function ImageCropper() {
+interface ImageCropperProps {
+  MIN_WIDTH: number;
+  MIN_HEIGHT: number;
+  aspectRatioWidth: number;
+  aspectRatioHeight: number;
+  maxContainerHeight: string;
+}
+export default function ImageCropper({
+  MIN_WIDTH,
+  MIN_HEIGHT,
+  aspectRatioWidth,
+  aspectRatioHeight,
+  maxContainerHeight,
+}: ImageCropperProps) {
   const [imgSrc, setImgSrc] = useState("");
   const [error, setError] = useState("");
   const [crop, setCrop] = useState<Crop>();
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+  const ASPECT_RATIO = aspectRatioWidth / aspectRatioHeight;
   const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -32,7 +43,7 @@ export default function ImageCropper() {
 
       imgElement.addEventListener("load", () => {
         const { naturalWidth, naturalHeight } = imgElement;
-        if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
+        if (naturalWidth < MIN_WIDTH || naturalHeight < MIN_HEIGHT) {
           setError("Your img must be at least 150x150");
           setImgSrc("");
         }
@@ -44,7 +55,7 @@ export default function ImageCropper() {
   };
   const onLoadImg = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
-    const cropWidthPercent = (MIN_DIMENSION / width) * 100;
+    const cropWidthPercent = (MIN_WIDTH / width) * 100;
     const crop = makeAspectCrop(
       { unit: "%", width: cropWidthPercent },
       ASPECT_RATIO,
@@ -79,11 +90,10 @@ export default function ImageCropper() {
               // const centeredCrop = centerCrop(c, c.width, c.height);
               setCrop(c);
             }}
-            circularCrop
             keepSelection
             aspect={ASPECT_RATIO}
-            minWidth={MIN_DIMENSION}
-            style={{ maxHeight: "70vh" }}
+            minWidth={MIN_WIDTH}
+            style={{ maxHeight: maxContainerHeight }}
           >
             <img
               ref={imgRef}
@@ -116,12 +126,14 @@ export default function ImageCropper() {
         </div>
       )}
       {crop && (
+        // to matryca z której bierzemy wycinek
         <canvas
           ref={canvasRef}
           style={{
+            display: "none",
             border: "2px solid black",
-            width: MIN_DIMENSION,
-            height: MIN_DIMENSION,
+            width: MIN_WIDTH,
+            height: MIN_HEIGHT,
             objectFit: "contain",
           }}
         />

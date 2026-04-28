@@ -85,40 +85,13 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
             />
           </label>
 
-          {/* Póki co rezygnujemy z lokalizacji w formie pola - moze potem reverse geolocation */}
-          {/* <label className="block text-sm text-green-900">
-            Lokalizacja
-            <input
-              type="text"
-              required
-              placeholder="np. Kraków, Las Wolski"
-              value={form.location}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  location: event.target.value,
-                }))
-              }
-              className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
-            />
-          </label> */}
-
-          {/* <label className="block text-sm text-green-900">
-            Zdjęcie
-            <input
-              type="file"
-              accept="image/*"
-              required
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  imageName: event.target.files?.[0]?.name ?? "",
-                }))
-              }
-              className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
-            />
-          </label> */}
-          <ImageCropper />
+          <ImageCropper
+            MIN_WIDTH={300}
+            MIN_HEIGHT={150}
+            aspectRatioWidth={2}
+            aspectRatioHeight={1}
+            maxContainerHeight="30vh"
+          />
           <p className="text-xs text-green-700">
             Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
             backendu.
