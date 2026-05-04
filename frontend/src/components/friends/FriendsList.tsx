@@ -1,7 +1,7 @@
-import { Friend } from "../../types";
+import { FriendListItem } from "../../types";
 
 interface FriendsListProps {
-  friends: Friend[];
+  friends: FriendListItem[];
   onRemove: (friendId: string) => void;
   onOpenProfile: (friendId: string) => void;
 }
@@ -23,9 +23,9 @@ export function FriendsList({ friends, onRemove, onOpenProfile }: FriendsListPro
           className="flex flex-col gap-3 rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
         >
           <div>
-            <p className="font-medium text-green-900">{friend.name}</p>
+            <p className="font-medium text-green-900">{friend.username}</p>
             <p className="text-sm text-green-800">
-              Wspólne obserwacje: {friend.mutualObservations}
+              Wspólne obserwacje: {friend.mutualObservations ?? 0}
             </p>
           </div>
 
