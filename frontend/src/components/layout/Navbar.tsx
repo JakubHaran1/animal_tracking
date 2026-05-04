@@ -39,6 +39,13 @@ export function Navbar({
             <span className={disabledNavLinkClassName}>Znajomi</span>
           )}
           {isAuthenticated ? (
+            <NavLink to="/friends/add" className={navLinkClassName}>
+              Dodaj znajomego
+            </NavLink>
+          ) : (
+            <span className={disabledNavLinkClassName}>Dodaj znajomego</span>
+          )}
+          {isAuthenticated ? (
             <NavLink to="/profile" className={navLinkClassName}>
               Mój profil
             </NavLink>
