@@ -1,46 +1,50 @@
+import { friendsService } from "../../services/friendsService";
+import { privateApi } from "../../api/privateApi";
+
+vi.mock("../../api/privateApi", () => ({
+  privateApi: {
+    get: vi.fn(),
+    delete: vi.fn(),
+    post: vi.fn(),
+    patch: vi.fn(),
+  },
+}));
+
+const mockFriends = [
+  { id: "u-1", username: "Ania", avatar: "a1" },
+  { id: "u-2", username: "Olek", avatar: "a2" },
+];
+
 describe("friendsService", () => {
   afterEach(() => {
-    vi.resetModules();
+    vi.resetAllMocks();
   });
 
-  it("returns initial friends list", async () => {
-    const { friendsService } = await import("../../services/friendsService");
+  it("returns friends list from API", async () => {
+    vi.mocked(privateApi.get).mockResolvedValue({ data: mockFriends });
 
     const friends = await friendsService.getFriends();
 
-    expect(friends.length).toBeGreaterThan(0);
+    expect(friends).toHaveLength(2);
+    expect(friends[0]?.username).toBe("Ania");
   });
 
-  it("returns a copy of friends list", async () => {
-    const { friendsService } = await import("../../services/friendsService");
+  it("removes friend and refreshes list", async () => {
+    vi.mocked(privateApi.delete).mockResolvedValue({});
+    vi.mocked(privateApi.get).mockResolvedValue({ data: [mockFriends[1]] });
 
-    const first = await friendsService.getFriends();
-    first.pop();
-    const second = await friendsService.getFriends();
+    const updated = await friendsService.removeFriend("u-1");
 
-    expect(second.length).toBeGreaterThan(first.length);
-  });
-
-  it("removes friend by id", async () => {
-    const { friendsService } = await import("../../services/friendsService");
-
-    const before = await friendsService.getFriends();
-    const friendId = before[0]?.id;
-
-    expect(friendId).toBeDefined();
-
-    const after = await friendsService.removeFriend(friendId as string);
-
-    expect(after.some((friend) => friend.id === friendId)).toBe(false);
-    expect(after.length).toBe(before.length - 1);
+    expect(privateApi.delete).toHaveBeenCalledWith("/friends/u-1/");
+    expect(updated).toHaveLength(1);
+    expect(updated[0]?.id).toBe("u-2");
   });
 
   it("returns friend ids list", async () => {
-    const { friendsService } = await import("../../services/friendsService");
+    vi.mocked(privateApi.get).mockResolvedValue({ data: mockFriends });
 
-    const friends = await friendsService.getFriends();
     const friendIds = await friendsService.getFriendIds();
 
-    expect(friendIds).toEqual(friends.map((friend) => friend.id));
+    expect(friendIds).toEqual(["u-1", "u-2"]);
   });
 });
