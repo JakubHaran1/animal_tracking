@@ -32,6 +32,10 @@ class UserCreateSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "confirm_password": {"write_only": True},
+        }
 
     def validate(self, data):
         if data["confirm_password"] != data["password"]:
@@ -40,12 +44,9 @@ class UserCreateSerializer(ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data.pop("confirm_password")
-        user = User.objects.create(
-            username=validated_data['username'], email=validated_data['email'])
-
-        user.set_password(validated_data["password"])
-        user.save()
+        validated_data.pop("confirm_password", None)
+        password = validated_data.pop("password")
+        user = User.objects.create_user(password=password, **validated_data)
         return user
         # dodać confirm field i validate czy takie samo - frontend
 
