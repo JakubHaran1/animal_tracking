@@ -7,6 +7,7 @@ import { authService } from "../../../services/authService";
 vi.mock("../../../services/authService", () => ({
   authService: {
     loginUser: vi.fn(),
+    registerUser: vi.fn(),
     getUser: vi.fn(),
   },
 }));
@@ -29,6 +30,7 @@ function renderWithProvider(component: React.ReactNode) {
 
 describe("AuthModal", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.mocked(authService.loginUser).mockResolvedValue({
       tokens: { access: "access-token", refresh: "refresh-token" },
     });
@@ -85,5 +87,43 @@ describe("AuthModal", () => {
     await user.click(screen.getByRole("button", { name: "zaloguj" }));
 
     expect(props.onSwitchToLogin).toHaveBeenCalledTimes(1);
+  });
+
+  it("submits registration and switches to login", async () => {
+    const user = userEvent.setup();
+    const props = createProps({ view: "register" });
+    vi.mocked(authService.registerUser).mockResolvedValue();
+
+    renderWithProvider(<AuthModal {...props} />);
+
+    await user.type(screen.getByLabelText("Nazwa użytkownika"), "new-user");
+    await user.type(screen.getByLabelText("Email"), "new@example.com");
+    await user.type(screen.getByLabelText("Hasło"), "pass1234");
+    await user.type(screen.getByLabelText("Potwierdź hasło"), "pass1234");
+    await user.click(screen.getByRole("button", { name: "Załóż konto" }));
+
+    expect(authService.registerUser).toHaveBeenCalledWith({
+      username: "new-user",
+      email: "new@example.com",
+      password: "pass1234",
+      confirm_password: "pass1234",
+    });
+    expect(props.onSwitchToLogin).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows error when passwords do not match", async () => {
+    const user = userEvent.setup();
+    const props = createProps({ view: "register" });
+
+    renderWithProvider(<AuthModal {...props} />);
+
+    await user.type(screen.getByLabelText("Nazwa użytkownika"), "new-user");
+    await user.type(screen.getByLabelText("Email"), "new@example.com");
+    await user.type(screen.getByLabelText("Hasło"), "pass1234");
+    await user.type(screen.getByLabelText("Potwierdź hasło"), "pass123");
+    await user.click(screen.getByRole("button", { name: "Załóż konto" }));
+
+    expect(authService.registerUser).not.toHaveBeenCalled();
+    expect(screen.getByText("Hasła muszą być takie same.")).toBeInTheDocument();
   });
 });
