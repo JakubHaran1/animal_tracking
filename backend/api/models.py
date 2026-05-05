@@ -7,6 +7,7 @@ from uuid import uuid4
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid4)
     avatar = models.CharField(max_length=50, blank=True, default="")
+    city = models.CharField(max_length=100, blank=True, default="")
 
     def __str__(self):
         return self.username

@@ -19,11 +19,27 @@ class SpeciesSerialiser(ModelSerializer):
         fields = '__all__'
 
 
+class ObservationSummarySerializer(ModelSerializer):
+
+    class Meta:
+        model = ObservationModel
+        fields = ["id", "title", "date"]
+
+
 class UserSerializer(ModelSerializer):
+    observations = ObservationSummarySerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'avatar', 'observations']
+        fields = [
+            "id",
+            "username",
+            "email",
+            "city",
+            "date_joined",
+            "avatar",
+            "observations",
+        ]
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -51,14 +67,29 @@ class UserCreateSerializer(ModelSerializer):
         # dodać confirm field i validate czy takie samo - frontend
 
 
+class UserUpdateSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["city"]
+
+
 class ObservationSerializer(ModelSerializer):
     species = SpeciesSerialiser()
     author = UserSerializer(read_only=True)
 
     class Meta:
         model = ObservationModel
-        fields = ['title', 'img', 'latitude',
-                  'longitude', 'date', 'author', 'species']
+        fields = [
+            "id",
+            "title",
+            "img",
+            "latitude",
+            "longitude",
+            "date",
+            "author",
+            "species",
+        ]
 
     def create(self, validated_data):
         # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
