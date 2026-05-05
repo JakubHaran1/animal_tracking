@@ -3,12 +3,28 @@ import { User } from "../../types";
 interface ProfileCardProps {
   user: User;
   title?: string;
+  onEdit?: () => void;
 }
 
-export function ProfileCard({ user, title = "Mój profil" }: ProfileCardProps) {
+export function ProfileCard({
+  user,
+  title = "Mój profil",
+  onEdit,
+}: ProfileCardProps) {
   return (
     <section className="rounded-xl border border-green-200 bg-lime-50 p-6 shadow-sm">
-      <h1 className="mb-4 text-xl font-semibold text-green-900">{title}</h1>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <h1 className="text-xl font-semibold text-green-900">{title}</h1>
+        {onEdit ? (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-green-950 transition hover:bg-amber-300"
+          >
+            Edytuj
+          </button>
+        ) : null}
+      </div>
       <dl className="space-y-3 text-sm">
         <div>
           <dt className="font-medium text-green-800">Nazwa użytkownika</dt>
@@ -20,7 +36,7 @@ export function ProfileCard({ user, title = "Mój profil" }: ProfileCardProps) {
         </div>
         <div>
           <dt className="font-medium text-green-800">Miasto</dt>
-          <dd className="text-green-950">{user.city}</dd>
+          <dd className="text-green-950">{user.city || "Nie podano"}</dd>
         </div>
         <div>
           <dt className="font-medium text-green-800">Dołączono</dt>
