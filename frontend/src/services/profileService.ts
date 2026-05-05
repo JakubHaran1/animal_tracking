@@ -25,12 +25,14 @@ const mapObservationToPublication = (
   createdAt: observation.date,
 });
 
+const toDateOnly = (value: string): string => value.split("T")[0] ?? value;
+
 const mapProfileResponse = (profile: UserProfileResponse): User => ({
   id: profile.id,
   username: profile.username,
   email: profile.email,
   city: profile.city ?? "",
-  joinedAt: profile.date_joined,
+  joinedAt: toDateOnly(profile.date_joined),
   publications: (profile.observations ?? []).map(mapObservationToPublication),
 });
 
