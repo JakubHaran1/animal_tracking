@@ -1,12 +1,97 @@
-# React + Vite
+# Frontend — Animal Tracking
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend aplikacji został przygotowany w React + TypeScript i obecnie działa jako interaktywny prototyp UI z logiką opartą o mocki danych.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 19 + TypeScript
+- Vite 7
+- React Router 7
+- Tailwind CSS 4
+- Axios (gotowy klient HTTP)
+- Vitest + Testing Library (testy jednostkowe komponentów/usług)
 
-## Expanding the ESLint configuration
+## Co jest zaimplementowane
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Nawigacja i layout
+
+- Globalny layout z navbar-em i modalem logowania/rejestracji.
+- Routing:
+	- `/` — ekran główny (mapa placeholder)
+	- `/friends` — lista znajomych (chroniona)
+	- `/profile` — mój profil (chroniona)
+	- `/friends/:friendId/profile` — profil znajomego (chroniona)
+
+### Autoryzacja (MVP)
+
+- `AuthContext` zarządza stanem zalogowania wyłącznie po stronie klienta.
+- `ProtectedRoute` przekierowuje niezalogowanego użytkownika na `/`.
+- Modal logowania działa w trybie placeholder (logowanie lokalne, bez backendu auth).
+
+### Widoki i funkcje
+
+- Ekran główny:
+	- placeholder mapy z licznikiem obserwacji,
+	- możliwość dodania obserwacji po zalogowaniu,
+	- modal dodawania obserwacji (`title`, `description`, `location`, `image`).
+- Znajomi:
+	- pobieranie listy,
+	- usuwanie znajomego,
+	- przejście do profilu znajomego.
+- Profile:
+	- widok własnego profilu,
+	- widok profilu znajomego po `friendId`.
+
+## Dane i serwisy
+
+Aktualnie warstwa danych opiera się o mocki (`src/mocks/*`) i lokalny stan w serwisach (`src/services/*`):
+
+- `observationsService` — pobieranie i tworzenie obserwacji,
+- `friendsService` — lista znajomych, ID znajomych, usuwanie,
+- `profileService` — profil użytkownika i profile znajomych.
+
+Jest też przygotowany klient API:
+
+- `apiClient` (Axios) z `baseURL` z `VITE_API_BASE_URL` (domyślnie `/api`).
+
+To ułatwia późniejsze przejście z mocków na realne endpointy backendu.
+
+## Uruchomienie
+
+W katalogu `frontend`:
+
+```bash
+npm install
+npm run dev
+```
+
+Domyślnie aplikacja startuje pod adresem podanym przez Vite (najczęściej `http://localhost:5173`).
+
+## Dostępne skrypty
+
+- `npm run dev` — uruchomienie trybu developerskiego,
+- `npm run build` — build produkcyjny,
+- `npm run preview` — podgląd buildu,
+- `npm run lint` — lint projektu,
+- `npm run test` — uruchomienie testów w trybie interaktywnym,
+- `npm run test:run` — jednorazowe uruchomienie testów,
+- `npm run test:watch` — testy w watch mode.
+
+## Testy
+
+W projekcie są testy dla kluczowych elementów:
+
+- komponentów (m.in. modal autoryzacji, modal dodawania obserwacji),
+- kontekstu auth,
+- routingu chronionego,
+- serwisów (API/friends/observations).
+
+Uruchomienie:
+
+```bash
+npm run test:run
+```
+
+## Następny krok (integracja)
+
+Naturalnym kolejnym etapem jest podmiana serwisów opartych o mocki na wywołania backendu Django REST i spięcie prawdziwego logowania/rejestracji.
