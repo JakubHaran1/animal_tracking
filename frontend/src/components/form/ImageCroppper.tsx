@@ -1,11 +1,15 @@
-import { useState, useRef } from "react";
-import ReactCrop, {
-  makeAspectCrop,
-  convertToPixelCrop,
-  type Crop,
-} from "react-image-crop";
+import React, {
+  useState,
+  useRef,
+  useImperativeHandle,
+  useMemo,
+  useCallback,
+} from "react";
+import ReactCrop, { makeAspectCrop, type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { setCanvasPreview } from "./setCanvasProvider";
+
+import { croperService } from "../../services";
+import { type ImageCropperHandle } from "../../types/form";
 
 interface ImageCropperProps {
   MIN_WIDTH: number;
@@ -13,50 +17,94 @@ interface ImageCropperProps {
   aspectRatioWidth: number;
   aspectRatioHeight: number;
   maxContainerHeight: string;
-  setImgField: (imgData: string) => void;
+  ref: React.Ref<ImageCropperHandle>;
 }
+
 export default function ImageCropper({
   MIN_WIDTH,
   MIN_HEIGHT,
   aspectRatioWidth,
   aspectRatioHeight,
   maxContainerHeight,
-  setImgField,
+  ref,
 }: ImageCropperProps) {
-  const [imgData, setImgData] = useState("");
+  const [imgData, setImgData] = useState<{
+    img: string;
+    imgTitile: string;
+  }>({ img: "", imgTitile: "" });
+
   const [error, setError] = useState("");
   const [crop, setCrop] = useState<Crop>();
+
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ASPECT_RATIO = aspectRatioWidth / aspectRatioHeight;
+  const inputRef = useRef<HTMLInputElement>(null);
+  const ASPECT_RATIO = useMemo(() => aspectRatioWidth / aspectRatioHeight, []);
+
+  // exposing child methods to parent
+  useImperativeHandle(ref, () => {
+    return {
+      // obsługa funkcji mapującej
+      async getCroppedData() {
+        if (!imgRef.current || !canvasRef.current || !crop || !inputRef.current)
+          return;
+        const file = await croperService.setCanvasPreview({
+          image: imgRef.current,
+          imageTitle: imgData.imgTitile,
+          canvas: canvasRef.current,
+          crop: crop,
+        });
+        setImgData({ img: "", imgTitile: "" });
+        inputRef.current.value = "";
+        return file;
+      },
+    };
+  }, [crop]);
 
   // Odczytywanie inputa/załadunek zdjęcia z inputa
   // Wstrzyknięcie daty z readera do <img>
-  const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
+  const onSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      const fileName = file?.name;
 
-    const reader = new FileReader();
+      if (!file || !fileName) {
+        // clear gdy user wybierze img a następnie znowu wybierajac da anuluj
+        setImgData({ img: "", imgTitile: "" });
+        return;
+      }
 
-    reader.addEventListener("load", () => {
-      const imgElement = new Image();
-      const readerData = reader.result?.toString() || "";
-      imgElement.src = readerData;
+      const reader = new FileReader();
 
-      imgElement.addEventListener("load", () => {
-        const { naturalWidth, naturalHeight } = imgElement;
-        if (naturalWidth < MIN_WIDTH || naturalHeight < MIN_HEIGHT) {
-          setError("Your img must be at least 300x150");
-          setImgData("");
-        }
+      reader.addEventListener("load", () => {
+        const imgElement = new Image();
+        const readerData = reader.result?.toString() || "";
+        imgElement.src = readerData;
+        console.log("reader", readerData);
+
+        imgElement.addEventListener("load", () => {
+          const { naturalWidth, naturalHeight } = imgElement;
+          if (naturalWidth < MIN_WIDTH || naturalHeight < MIN_HEIGHT) {
+            setError("Your img must be at least 300x150");
+            if (inputRef.current) {
+              inputRef.current.value = "";
+              setImgData({ img: "", imgTitile: "" });
+            }
+          } else {
+            setImgData({ img: readerData, imgTitile: fileName });
+            setError("");
+          }
+        });
       });
-      setImgData(readerData);
-    });
 
-    reader.readAsDataURL(file);
-  };
+      reader.readAsDataURL(file);
+    },
+    [MIN_WIDTH, MIN_HEIGHT],
+  );
+
+  const handleCropChange = useCallback((c: Crop) => {
+    setCrop(c);
+  }, []);
 
   // Po załadowaniu zdjęcia tworzy crop - miejsce do zaznaczenia wycinka
   const onLoadImg = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -69,23 +117,7 @@ export default function ImageCropper({
       height,
     );
 
-    setCrop(crop);
-  };
-
-  // obsługa funkcji mapującej
-  const handleCanvasChanges = () => {
-    if (!imgRef.current || !canvasRef.current || !crop) return;
-    setCanvasPreview({
-      image: imgRef.current,
-      canvas: canvasRef.current,
-      crop: convertToPixelCrop(
-        crop,
-        imgRef.current.width,
-        imgRef.current.height,
-      ),
-    });
-    const data = canvasRef.current.toDataURL();
-    setImgField(data);
+    handleCropChange(crop);
   };
 
   return (
@@ -94,8 +126,8 @@ export default function ImageCropper({
         Zdjęcie
         <input
           type="file"
-          accept="image/*"
-          required
+          accept="image/jpeg,image/png"
+          ref={inputRef}
           // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
 
           onChange={onSelect}
@@ -103,16 +135,12 @@ export default function ImageCropper({
         />
         <p className="color-red">{error}</p>
       </label>
-      {imgData && (
+      {imgData.img && (
         <div className="text-center">
           <ReactCrop
             crop={crop}
             // aktualizacja cropa
-            onChange={(_, c) => {
-              // const centeredCrop = centerCrop(c, c.width, c.height);
-              setCrop(c);
-            }}
-            onComplete={handleCanvasChanges}
+            onChange={handleCropChange}
             keepSelection
             aspect={ASPECT_RATIO}
             minWidth={MIN_WIDTH}
@@ -120,32 +148,12 @@ export default function ImageCropper({
           >
             <img
               ref={imgRef}
-              src={imgData}
+              src={imgData.img}
               // gdy załaduje sie img z przekazanego src to tworza sie crop value
               onLoad={onLoadImg}
               alt="Upload a photo of your observation"
             />
           </ReactCrop>
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              if (!imgRef.current || !canvasRef.current || !crop) return;
-              setCanvasPreview({
-                image: imgRef.current,
-                canvas: canvasRef.current,
-                crop: convertToPixelCrop(
-                  crop,
-                  imgRef.current.width,
-                  imgRef.current.height,
-                ),
-              });
-              const data = canvasRef.current.toDataURL();
-              console.log(data);
-            }}
-            className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-green-600"
-          >
-            save img test
-          </button>
         </div>
       )}
       {crop && (

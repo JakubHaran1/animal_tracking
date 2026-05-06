@@ -13,25 +13,26 @@ class User(AbstractUser):
 
 
 class SpeciesModel(models.Model):
-    name = models.CharField(max_length=150)
-    latitude = models.DecimalField(max_digits=8, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    name = models.CharField(max_length=150,null=True)
+    latitude = models.DecimalField(max_digits=8, decimal_places=6,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 
 class ObservationModel(models.Model):
     author = models.ForeignKey(User, verbose_name=(
         "Users"), related_name='observations', on_delete=models.CASCADE)
     species = models.ForeignKey(SpeciesModel, verbose_name=(
-        "species"), related_name="obsertvations", on_delete=models.CASCADE)
-
+        "species"), related_name="obsertvations", on_delete=models.CASCADE,null=True)
+    # Przy flushu bazy danych zmienic na false
+    description = models.TextField(max_length=2 ,null=True)
     title = models.CharField(max_length=100)
     img = models.ImageField(
         upload_to='observations/', height_field=None, width_field=None, max_length=None, default="")
-    latitude = models.DecimalField(max_digits=8, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=10, decimal_places=6)
+    longitude = models.DecimalField(max_digits=10, decimal_places=6)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

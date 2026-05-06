@@ -3,7 +3,7 @@ import { postData } from "./publicApi";
 
 const privateApi = axios.create({
   baseURL: "http://127.0.0.1:8000/api/",
-  headers: { "Content-Type": "application/json" },
+
   timeout: 10000,
 });
 
@@ -56,8 +56,14 @@ privateApi.interceptors.response.use(
 );
 
 async function getDataAuth<T>(url: string): Promise<T> {
-  const resp = await privateApi.get(url);
+  const resp = await privateApi.get(url, {
+    headers: { "Content-Type": "application/json" },
+  });
   return resp.data;
 }
 
-export { privateApi, getDataAuth };
+async function postObservation<T>(url: string, data: FormData): Promise<T> {
+  const resp = await privateApi.post(url, data);
+  return resp.data;
+}
+export { privateApi, getDataAuth, postObservation };
