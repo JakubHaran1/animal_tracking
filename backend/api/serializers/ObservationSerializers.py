@@ -38,6 +38,7 @@ class UserSerializer(ModelSerializer):
             "city",
             "date_joined",
             "avatar",
+            "is_verified",
             "observations",
         ]
 
@@ -63,8 +64,11 @@ class UserCreateSerializer(ModelSerializer):
         validated_data.pop("confirm_password", None)
         password = validated_data.pop("password")
         user = User.objects.create_user(password=password, **validated_data)
+        # NOTE: for now mark new accounts as verified to simplify development flow.
+        # TODO: change to False in production so users must confirm via email.
+        user.is_verified = True
+        user.save(update_fields=["is_verified"])
         return user
-        # dodać confirm field i validate czy takie samo - frontend
 
 
 class UserUpdateSerializer(ModelSerializer):

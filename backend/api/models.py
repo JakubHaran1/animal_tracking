@@ -8,6 +8,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid4)
     avatar = models.CharField(max_length=50, blank=True, default="")
     city = models.CharField(max_length=100, blank=True, default="")
+    is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
