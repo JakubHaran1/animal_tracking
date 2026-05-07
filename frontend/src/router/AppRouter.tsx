@@ -1,7 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AppLayout } from "../components";
 import { AuthProvider } from "../context/AuthContext";
-import { FriendProfilePage, FriendsPage, HomePage, ProfilePage } from "../pages";
+import {
+  AddFriendsPage,
+  FriendProfilePage,
+  FriendsPage,
+  HomePage,
+  ProfilePage,
+} from "../pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export function AppRouter() {
@@ -16,6 +22,14 @@ export function AppRouter() {
               element={
                 <ProtectedRoute>
                   <FriendsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/friends/add"
+              element={
+                <ProtectedRoute>
+                  <AddFriendsPage />
                 </ProtectedRoute>
               }
             />

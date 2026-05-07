@@ -1,6 +1,6 @@
 import { postData } from "../api/publicApi";
 import { getDataAuth } from "../api/privateApi";
-import { CredentialsType, User } from "../types";
+import { CredentialsType, RegisterPayload, User } from "../types";
 
 interface LoginResponse {
   tokens: { refresh: string; access: string };
@@ -15,6 +15,9 @@ export const authService = {
     localStorage.setItem("refresh", res.tokens.refresh);
 
     return res;
+  },
+  async registerUser(data: RegisterPayload): Promise<void> {
+    await postData<void>("/users/", data);
   },
   async getUser(): Promise<User> {
     const res = await getDataAuth<User>("/users/me/");

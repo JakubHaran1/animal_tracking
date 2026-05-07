@@ -5,7 +5,7 @@ describe("apiClient", () => {
   });
 
   it("uses /api as default baseURL", async () => {
-    vi.unstubAllEnvs();
+    vi.stubEnv("VITE_API_BASE_URL", "");
     const { apiClient } = await import("../../services/apiClient");
 
     expect(apiClient.defaults.baseURL).toBe("/api");

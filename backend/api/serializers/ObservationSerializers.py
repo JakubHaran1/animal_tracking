@@ -21,11 +21,27 @@ class SpeciesSerialiser(ModelSerializer):
         fields = '__all__'
 
 
+class ObservationSummarySerializer(ModelSerializer):
+
+    class Meta:
+        model = ObservationModel
+        fields = ["id", "title", "date"]
+
+
 class UserSerializer(ModelSerializer):
+    observations = ObservationSummarySerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email','observations']
+        fields = [
+            "id",
+            "username",
+            "email",
+            "city",
+            "date_joined",
+            "avatar",
+            "observations",
+        ]
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -34,6 +50,10 @@ class UserCreateSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "confirm_password": {"write_only": True},
+        }
 
     def validate(self, data):
         if data["confirm_password"] != data["password"]:
@@ -42,14 +62,18 @@ class UserCreateSerializer(ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data.pop("confirm_password")
-        user = User.objects.create(
-            username=validated_data['username'], email=validated_data['email'])
-
-        user.set_password(validated_data["password"])
-        user.save()
+        validated_data.pop("confirm_password", None)
+        password = validated_data.pop("password")
+        user = User.objects.create_user(password=password, **validated_data)
         return user
       
+
+
+class UserUpdateSerializer(ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["city"]
 
 
 class ObservationSerializer(ModelSerializer):
@@ -58,8 +82,16 @@ class ObservationSerializer(ModelSerializer):
     img = ImageField()
     class Meta:
         model = ObservationModel
-        fields = ['title', 'img', 'latitude',
-                  'longitude', 'date', 'author', 'species']
+        fields = [
+            "id",
+            "title",
+            "img",
+            "latitude",
+            "longitude",
+            "date",
+            "author",
+            "species",
+        ]
 
     def create(self, validated_data):
         # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
