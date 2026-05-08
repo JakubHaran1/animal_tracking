@@ -6,22 +6,18 @@ import {
 } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { friendsService, observationsService } from "../services";
-import { Observation, CoordsType } from "../types";
+import { Observation } from "../types";
+import { ObservationProvider } from "../context/ObservationContext";
 
 export function HomePage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
-  const [isAddObservationOpen, setIsAddObservationOpen] = useState(false);
-  const [observationCoords, setObservationCoords] = useState<
-    CoordsType | undefined
-  >(undefined);
 
   useEffect(() => {
     if (!isAuthenticated) {
       observationsService.getObservations().then(setObservations);
       return;
     }
-
     friendsService
       .getFriendIds()
       .then((friendIds) =>
@@ -30,27 +26,25 @@ export function HomePage() {
       .then(setObservations);
   }, [isAuthenticated]);
 
-  const handleMapClick = (coords: CoordsType) => {
-    setObservationCoords(coords);
-    setIsAddObservationOpen(true);
-  };
+  // Chwilowo zakomentowuje - bedziemy przekazywac longitude i latitude pojedynczo
 
-  const parseLocation = (location: string) => {
-    const [latitudeRaw, longitudeRaw] = location
-      .split(",")
-      .map((value) => value.trim());
-    const latitude = Number(latitudeRaw);
-    const longitude = Number(longitudeRaw);
+  // const parseLocation = (location: string) => {
+  //   const [latitudeRaw, longitudeRaw] = location
+  //     .split(",")
+  //     .map((value) => value.trim());
+  //   const latitude = Number(latitudeRaw);
+  //   const longitude = Number(longitudeRaw);
 
-    if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-      return { latitude, longitude };
-    }
+  //   if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+  //     return { latitude, longitude };
+  //   }
 
-    return { latitude: 0, longitude: 0 };
-  };
+  //   return { latitude: 0, longitude: 0 };
+  // };
 
   const handleAddObservation = async (draft: ObservationDraft) => {
-    const { latitude, longitude } = parseLocation(draft.location);
+    const latitude = 0;
+    const longitude = 0;
     const createdObservation = await observationsService.createObservation({
       userId: "u-1",
       speciesId: 1,
@@ -65,18 +59,15 @@ export function HomePage() {
 
   return (
     <>
-      <MapPlaceholder
-        observations={observations}
-        canAddObservation={isAuthenticated}
-        onAddObservationClick={() => setIsAddObservationOpen(true)}
-        handleMapClick={handleMapClick}
-      />
-      <AddObservationModal
-        isOpen={isAddObservationOpen}
-        onClose={() => setIsAddObservationOpen(false)}
-        onSubmit={handleAddObservation}
-      />
-      <p>test lat po click {observationCoords?.latitude ?? ""}</p>
+      <ObservationProvider>
+        <MapPlaceholder
+          observations={observations}
+          canAddObservation={isAuthenticated}
+        />
+        <AddObservationModal onSubmit={handleAddObservation} />
+      </ObservationProvider>
+
+      <p>test user login {user?.email ?? ""}</p>
     </>
   );
 }

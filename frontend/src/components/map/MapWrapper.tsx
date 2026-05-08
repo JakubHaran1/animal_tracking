@@ -10,10 +10,8 @@ const DEFAULT_MAP_COORDS: CoordsType = {
 
 export default function MapWrapper({
   canAddObservation,
-  handleMapClick,
 }: {
   canAddObservation: boolean;
-  handleMapClick: (coords: CoordsType) => void;
 }) {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
 
@@ -47,9 +45,7 @@ export default function MapWrapper({
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {canAddObservation && (
-            <LocationMarker handleMapClick={handleMapClick} />
-          )}
+          {canAddObservation && <LocationMarker />}
         </MapContainer>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
@@ -59,7 +55,9 @@ export default function MapWrapper({
               role="status"
               aria-label="Loading map"
             />
-            <p className="text-sm font-medium tracking-wide text-green-900">Loading</p>
+            <p className="text-sm font-medium tracking-wide text-green-900">
+              Loading
+            </p>
           </div>
         </div>
       )}

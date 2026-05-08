@@ -5,8 +5,8 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api/";
 
 const privateApi = axios.create({
-  baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  baseURL: "http://127.0.0.1:8000/api/",
+
   timeout: 10000,
 });
 
@@ -59,8 +59,14 @@ privateApi.interceptors.response.use(
 );
 
 async function getDataAuth<T>(url: string): Promise<T> {
-  const resp = await privateApi.get(url);
+  const resp = await privateApi.get(url, {
+    headers: { "Content-Type": "application/json" },
+  });
   return resp.data;
 }
 
-export { privateApi, getDataAuth };
+async function postObservation<T>(url: string, data: FormData): Promise<T> {
+  const resp = await privateApi.post(url, data);
+  return resp.data;
+}
+export { privateApi, getDataAuth, postObservation };
