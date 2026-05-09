@@ -11,6 +11,10 @@ export default function LocationMarker() {
       map.locate();
       handleMapClick(clickEv.latlng);
     },
+    // locationfound(e) {
+    //   console.log(e.latlng);
+    //   map.flyTo(e.latlng, map.getZoom());
+    // },
   });
 
   return activeObservationCoords === null ? null : (

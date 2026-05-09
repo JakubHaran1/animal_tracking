@@ -8,6 +8,7 @@ import {
 } from "react";
 import { CoordsType } from "../types";
 import { LatLng } from "leaflet";
+
 interface ObservationContextValue {
   isAddObservationOpen: boolean;
   onOpenModal: () => void;
@@ -16,9 +17,11 @@ interface ObservationContextValue {
   activeObservationCoords: CoordsType | null;
   activeMarker: React.RefObject<L.Marker | null>;
 }
+
 interface ObservationProviderProps {
   children: ReactNode;
 }
+
 const observationContext = createContext<ObservationContextValue | undefined>(
   undefined,
 );
@@ -37,6 +40,7 @@ export function ObservationProvider({ children }: ObservationProviderProps) {
         setIsAddObservationOpen(false);
         setActiveObservationCoords(null);
       },
+
       handleMapClick: (coords: LatLng) => {
         setActiveObservationCoords({
           latitude: coords.lat,
@@ -44,6 +48,7 @@ export function ObservationProvider({ children }: ObservationProviderProps) {
         });
         setIsAddObservationOpen(true);
       },
+
       activeObservationCoords,
       activeMarker,
     }),

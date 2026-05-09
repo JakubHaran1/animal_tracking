@@ -15,6 +15,9 @@ export const observationsService = {
       ),
     );
   },
+  async getObservationsByUserUUID(uuid: string): Promise<Observation[]> {
+    return (await privateApi.get(`/observations?${uuid}`)).data;
+  },
 
   async createObservation(payload: CreateObservationPayload) {
     let form_data = new FormData();

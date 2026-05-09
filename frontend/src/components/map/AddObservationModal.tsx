@@ -69,8 +69,6 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
     } catch (err) {
       if (isAxiosError(err)) {
         setErrors((rest) => ({ ...rest, ...err.response?.data }));
-        console.log("Backend:");
-        console.log("Status:", err.response?.status);
       } else {
         setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
       }

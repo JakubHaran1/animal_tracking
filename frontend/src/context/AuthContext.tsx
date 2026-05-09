@@ -34,6 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         const user = await authService.getUser();
         setUser(user);
+        console.log(user);
         setIsAuthenticated(true);
       } catch {
         console.log("nie mozna zalogowac usera");
