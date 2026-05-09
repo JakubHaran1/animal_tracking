@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useObservationContext } from "../../context/ObservationContext";
 import ImageCropper from "../form/ImageCroppper";
 
@@ -65,6 +65,7 @@ export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
       });
       console.log(response);
       setForm(initialFormState);
+      onCloseModal();
     } catch (err) {
       if (isAxiosError(err)) {
         setErrors((rest) => ({ ...rest, ...err.response?.data }));

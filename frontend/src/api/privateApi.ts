@@ -65,8 +65,4 @@ async function getDataAuth<T>(url: string): Promise<T> {
   return resp.data;
 }
 
-async function postObservation<T>(url: string, data: FormData): Promise<T> {
-  const resp = await privateApi.post(url, data);
-  return resp.data;
-}
-export { privateApi, getDataAuth, postObservation };
+export { privateApi, getDataAuth };

@@ -28,11 +28,4 @@ def save_img(instance,**kwargs):
         instance.img_thumbnail.save(new_name,img_new,save=False)
         instance.save()
            
-            
-            # observation = ObservationModel.objects.create(
-            #     species=species_obj, **validated_data)
-            
-            
-
-    # if created:
-    #     ObservationModel.save()
+        

@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  AddObservationModal,
-  MapPlaceholder,
-  ObservationDraft,
-} from "../components";
+import { AddObservationModal, MapPlaceholder } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { friendsService, observationsService } from "../services";
-import { Observation } from "../types";
+import { Observation, ObservationDraft } from "../types";
 import { ObservationProvider } from "../context/ObservationContext";
 
 export function HomePage() {
@@ -26,35 +22,19 @@ export function HomePage() {
       .then(setObservations);
   }, [isAuthenticated]);
 
-  // Chwilowo zakomentowuje - bedziemy przekazywac longitude i latitude pojedynczo
-
-  // const parseLocation = (location: string) => {
-  //   const [latitudeRaw, longitudeRaw] = location
-  //     .split(",")
-  //     .map((value) => value.trim());
-  //   const latitude = Number(latitudeRaw);
-  //   const longitude = Number(longitudeRaw);
-
-  //   if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-  //     return { latitude, longitude };
-  //   }
-
-  //   return { latitude: 0, longitude: 0 };
-  // };
-
   const handleAddObservation = async (draft: ObservationDraft) => {
     const latitude = 0;
     const longitude = 0;
-    const createdObservation = await observationsService.createObservation({
-      userId: "u-1",
-      speciesId: 1,
-      title: draft.title,
-      description: draft.description,
-      latitude: latitude,
-      longitude: longitude,
-    });
+    // const createdObservation = await observationsService.createObservation({
+    //   userId: "u-1",
+    //   speciesId: 1,
+    //   title: draft.title,
+    //   description: draft.description,
+    //   latitude: latitude,
+    //   longitude: longitude,
+    // });
 
-    setObservations((current) => [createdObservation, ...current]);
+    // setObservations((current) => [createdObservation, ...current]);
   };
 
   return (
