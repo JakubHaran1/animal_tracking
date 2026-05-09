@@ -11,7 +11,7 @@ import type { User } from "../types";
 import { authService } from "../services/authService";
 
 interface AuthContextValue {
-  isAuthenticated: boolean; // to bym wywalił i sprawdzał po user undefinded
+  isAuthenticated: boolean;
   user: User | undefined;
   logIn: (userData: User) => void;
   logOut: () => void;
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(false);
       },
     }),
-    [isAuthenticated],
+    [isAuthenticated, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -3,3 +3,4 @@ export * from "./friend";
 export * from "./observation";
 export * from "./publication";
 export * from "./user";
+export * from "./form";

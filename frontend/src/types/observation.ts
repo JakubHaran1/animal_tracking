@@ -1,3 +1,5 @@
+import { ImageCropperHandle } from "./form";
+
 export interface CoordsType {
   latitude: number;
   longitude: number;
@@ -15,10 +17,16 @@ export interface Observation {
 }
 
 export interface CreateObservationPayload {
-  userId: string;
-  speciesId: number;
+  // chwilowo - potem dodamy
+  // speciesId: number;
   title: string;
   description: string;
   latitude: number;
   longitude: number;
+  img: File;
+}
+
+export interface ObservationDraft {
+  title: string;
+  description: string;
 }
