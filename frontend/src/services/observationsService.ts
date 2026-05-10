@@ -1,7 +1,6 @@
-import { postObservation } from "../api/privateApi";
+import { privateApi } from "../api/privateApi";
 import { observationsMock } from "../mocks";
 import { CreateObservationPayload, Observation } from "../types";
-
 let localObservations = [...observationsMock];
 
 export const observationsService = {
@@ -25,10 +24,11 @@ export const observationsService = {
     form_data.append("description", payload.description);
     form_data.append("latitude", payload.latitude.toFixed(6));
     form_data.append("longitude", payload.longitude.toFixed(6));
-    const resp = await postObservation<CreateObservationPayload>(
+    const resp = await privateApi.post<CreateObservationPayload>(
       "/observations/",
       form_data,
     );
+
     return resp;
   },
 };

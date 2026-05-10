@@ -5,7 +5,7 @@ from rest_framework.parsers import FormParser,  MultiPartParser
 
 from api.serializers.ObservationSerializers import ObservationSerializer,  SpeciesSerialiser
 from api.models import SpeciesModel,   ObservationModel
-
+from rest_framework.filters import SearchFilter
 class SpeciesViewSet(ModelViewSet):
     queryset = SpeciesModel.objects.all()
     serializer_class = SpeciesSerialiser
@@ -15,6 +15,9 @@ class ObservationViewSet(ModelViewSet):
     queryset = ObservationModel.objects.all()
     serializer_class = ObservationSerializer
     parser_classes = [FormParser,  MultiPartParser]
+    filter_backends = [SearchFilter]
+    search_fields = ["author"]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+

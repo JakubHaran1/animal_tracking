@@ -84,13 +84,15 @@ class UserUpdateSerializer(ModelSerializer):
 class ObservationSerializer(ModelSerializer):
     # species = SpeciesSerialiser()
     author = UserSerializer(read_only=True)
-    img = ImageField()
+    # img = ImageField()
+    read_only_fields = ["img_thumbnail"]
     class Meta:
         model = ObservationModel
         fields = [
             "id",
             "title",
             "img",
+            "img_thumbnail",
             "latitude",
             "longitude",
             "date",
@@ -98,7 +100,7 @@ class ObservationSerializer(ModelSerializer):
             "species",
         ]
 
-    def create(self, validated_data):
+    # def create(self, validated_data):
         # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
         # w celach ćwiczebnych
         # pobiera species data od usera i pobiera z bazy danych objekt species lub go tworzy 
@@ -107,24 +109,24 @@ class ObservationSerializer(ModelSerializer):
         #     **species_data)
 
         # edycja imgt do przeniesienia do signału 
-        img = validated_data["img"]
-        img_name, ext = os.path.splitext(img.name)
-        new_name = img_name + '_thumbnail.webp'
-        print(new_name)
-        with Image.open(img) as im:
-            im.thumbnail((300, 300))
-            bufor = io.BytesIO()
-            im.save(bufor, 'webp')
-            print("im", im)
+        # img = validated_data["img"]
+        # img_name, ext = os.path.splitext(img.name)
+        # new_name = img_name + '_thumbnail.webp'
+        # print(new_name)
+        # with Image.open(img) as im:
+        #     im.thumbnail((300, 300))
+        #     bufor = io.BytesIO()
+        #     im.save(bufor, 'webp')
+        #     print("im", im)
 
-        img_new = ContentFile(bufor.getvalue(), new_name)
-        validated_data["img"] = img_new
+        # img_new = ContentFile(bufor.getvalue(), new_name)
+        # validated_data["img"] = img_new
 
-        observation = ObservationModel.objects.create(
-          **validated_data)
+        # observation = ObservationModel.objects.create(
+        #   **validated_data)
         
         # observation = ObservationModel.objects.create(
         #     species=species_obj, **validated_data)
         
-        return observation
+        # return observation
   

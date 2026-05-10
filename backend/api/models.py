@@ -29,10 +29,12 @@ class ObservationModel(models.Model):
     species = models.ForeignKey(SpeciesModel, verbose_name=(
         "species"), related_name="obsertvations", on_delete=models.CASCADE,null=True)
     # Przy flushu bazy danych zmienic na false
-    description = models.TextField(max_length=2 ,null=True)
+    description = models.TextField(max_length=2 ,null=False)
     title = models.CharField(max_length=100)
     img = models.ImageField(
-        upload_to='observations/', height_field=None, width_field=None, max_length=None, default="")
+        upload_to='observations/', height_field=None, width_field=None, max_length=None)
+    img_thumbnail = models.ImageField(
+        upload_to='observations/', height_field=None, width_field=None, max_length=None,default="")
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
     date = models.DateField(auto_now_add=True)
