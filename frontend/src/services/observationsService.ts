@@ -1,7 +1,5 @@
 import { privateApi } from "../api/privateApi";
-import { observationsMock } from "../mocks";
 import { CreateObservationPayload, Observation, BoundsType } from "../types";
-let localObservations = [...observationsMock];
 
 export const observationsService = {
   async getObservations(bounds: BoundsType): Promise<Observation[]> {

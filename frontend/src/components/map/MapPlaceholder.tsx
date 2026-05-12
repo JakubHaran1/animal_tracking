@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Observation, BoundsType } from "../../types";
+import { BoundsType, Observation } from "../../types";
 
 import { useAuth } from "../../context/AuthContext";
 import { useObservationContext } from "../../context/ObservationContext";
@@ -8,6 +8,7 @@ import { useObservationContext } from "../../context/ObservationContext";
 import MapWrapper from "./MapWrapper";
 import { ObservationsList } from "../observations/ObservationsList";
 import { observationsService } from "../../services";
+
 interface MapPlaceholderProps {
   canAddObservation: boolean;
 }

@@ -6,10 +6,6 @@ import { type ObservationDraft, type ImageCropperHandle } from "../../types";
 import { observationsService } from "../../services";
 import { isAxiosError } from "axios";
 
-interface AddObservationModalProps {
-  onSubmit: (draft: ObservationDraft) => void;
-}
-
 const initialFormState: ObservationDraft = {
   title: "",
   description: "",
@@ -18,7 +14,7 @@ interface ErrorStateType {
   title: string[];
   description: string[];
 }
-export function AddObservationModal({ onSubmit }: AddObservationModalProps) {
+export function AddObservationModal() {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
   const [errors, setErrors] = useState<ErrorStateType>({
     title: [],

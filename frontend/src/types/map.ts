@@ -1,4 +1,6 @@
-export interface BoundsType {
-  _northEast: { lat: number; lng: number };
-  _southWest: { lat: number; lng: number };
-}
+import { LatLng } from "leaflet";
+
+export type BoundsType = {
+  _northEast: LatLng;
+  _southWest: LatLng;
+};
