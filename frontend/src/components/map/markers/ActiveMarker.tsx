@@ -1,8 +1,8 @@
 import { Marker, Popup, useMapEvents } from "react-leaflet";
+import { ActiveIcon } from "../icons/ActiveIcon";
+import { useObservationContext } from "../../../context/ObservationContext";
 
-import { useObservationContext } from "../../context/ObservationContext";
-
-export default function LocationMarker() {
+export default function ActiveMarker() {
   const { handleMapClick, activeObservationCoords, activeMarker } =
     useObservationContext();
 
@@ -24,6 +24,7 @@ export default function LocationMarker() {
         activeObservationCoords.longitude,
       ]}
       ref={activeMarker}
+      icon={ActiveIcon}
     >
       <Popup>You are here</Popup>
     </Marker>

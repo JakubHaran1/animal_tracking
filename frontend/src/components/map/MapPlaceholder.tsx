@@ -1,17 +1,34 @@
-import { useObservationContext } from "../../context/ObservationContext";
-import { Observation } from "../../types";
-import MapWrapper from "./MapWrapper";
+import { useEffect, useState } from "react";
 
+import { Observation, BoundsType } from "../../types";
+
+import { useAuth } from "../../context/AuthContext";
+import { useObservationContext } from "../../context/ObservationContext";
+
+import MapWrapper from "./MapWrapper";
+import { ObservationsList } from "../observations/ObservationsList";
+import { observationsService } from "../../services";
 interface MapPlaceholderProps {
-  observations: Observation[];
   canAddObservation: boolean;
 }
 
-export function MapPlaceholder({
-  observations,
-  canAddObservation,
-}: MapPlaceholderProps) {
+export function MapPlaceholder({ canAddObservation }: MapPlaceholderProps) {
   const { onOpenModal } = useObservationContext();
+  const { isAuthenticated, user } = useAuth();
+  const [observations, setObservations] = useState<Observation[]>([]);
+  const [bounds, setBounds] = useState<BoundsType | null>(null);
+
+  useEffect(() => {
+    if (!bounds) {
+      return;
+    }
+    observationsService
+      .getObservations(bounds)
+      .then((obs) => setObservations([...obs]));
+    if (!isAuthenticated || !user || !bounds) {
+      return;
+    }
+  }, [bounds]);
   return (
     <section className="space-y-4 2xl:space-y-5">
       <div className="rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm 2xl:p-5">
@@ -36,8 +53,14 @@ export function MapPlaceholder({
       </div>
 
       <div className="flex h-[420px] items-center justify-center relative z-0 rounded-xl border-2 border-dashed border-green-300 bg-gradient-to-br from-lime-100 to-amber-100 text-center 2xl:h-[560px]">
-        <MapWrapper canAddObservation={canAddObservation} />
+        <MapWrapper
+          canAddObservation={canAddObservation}
+          observations={observations}
+          setBounds={setBounds}
+          bounds={bounds}
+        />
       </div>
+      <ObservationsList observations={observations} />
     </section>
   );
 }

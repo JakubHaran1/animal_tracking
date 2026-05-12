@@ -1,22 +1,20 @@
 import { privateApi } from "../api/privateApi";
 import { observationsMock } from "../mocks";
-import { CreateObservationPayload, Observation } from "../types";
+import { CreateObservationPayload, Observation, BoundsType } from "../types";
 let localObservations = [...observationsMock];
 
 export const observationsService = {
-  async getObservations(): Promise<Observation[]> {
-    return Promise.resolve([...localObservations]);
-  },
-
-  async getObservationsByUserIds(userIds: string[]): Promise<Observation[]> {
-    return Promise.resolve(
-      localObservations.filter((observation) =>
-        userIds.includes(observation.userId),
-      ),
-    );
-  },
-  async getObservationsByUserUUID(uuid: string): Promise<Observation[]> {
-    return (await privateApi.get(`/observations?${uuid}`)).data;
+  async getObservations(bounds: BoundsType): Promise<Observation[]> {
+    return (
+      await privateApi.get("/observations", {
+        params: {
+          _northEast_lat: bounds._northEast.lat,
+          _northEast_lng: bounds._northEast.lng,
+          _southWest_lat: bounds._southWest.lat,
+          _southWest_lng: bounds._southWest.lng,
+        },
+      })
+    ).data;
   },
 
   async createObservation(payload: CreateObservationPayload) {

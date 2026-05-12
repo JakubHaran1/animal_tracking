@@ -6,3 +6,4 @@ export * from "./map/AddObservationModal";
 export * from "./map/MapPlaceholder";
 export * from "./profile/ProfileCard";
 export * from "./profile/ProfileEditModal";
+export * from "./observations/ObservationsList";

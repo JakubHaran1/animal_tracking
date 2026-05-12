@@ -4,3 +4,4 @@ export * from "./observation";
 export * from "./publication";
 export * from "./user";
 export * from "./form";
+export * from "./map";
