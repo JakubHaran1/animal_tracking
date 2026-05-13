@@ -9,11 +9,7 @@ import MapWrapper from "./MapWrapper";
 import { ObservationsList } from "../observations/ObservationsList";
 import { observationsService } from "../../services";
 
-interface MapPlaceholderProps {
-  canAddObservation: boolean;
-}
-
-export function MapPlaceholder({ canAddObservation }: MapPlaceholderProps) {
+export function MapPlaceholder() {
   const { onOpenModal } = useObservationContext();
   const { isAuthenticated, user } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
@@ -37,7 +33,7 @@ export function MapPlaceholder({ canAddObservation }: MapPlaceholderProps) {
           <h1 className="text-xl font-semibold text-green-900 2xl:text-2xl">
             Ekran główny (mapa)
           </h1>
-          {canAddObservation ? (
+          {isAuthenticated ? (
             <button
               type="button"
               onClick={onOpenModal}
@@ -55,7 +51,6 @@ export function MapPlaceholder({ canAddObservation }: MapPlaceholderProps) {
 
       <div className="flex h-[420px] items-center justify-center relative z-0 rounded-xl border-2 border-dashed border-green-300 bg-gradient-to-br from-lime-100 to-amber-100 text-center 2xl:h-[560px]">
         <MapWrapper
-          canAddObservation={canAddObservation}
           observations={observations}
           setBounds={setBounds}
           bounds={bounds}

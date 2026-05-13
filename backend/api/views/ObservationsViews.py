@@ -31,7 +31,7 @@ class ObservationViewSet(ModelViewSet):
 
     def get_queryset(self):
         bounds = self.request.query_params.dict()
-        print(bounds)
+      
         observations = self.queryset.filter(latitude__lte=bounds["_northEast_lat"]).filter(longitude__lte=bounds["_northEast_lng"]).filter(latitude__gte=bounds["_southWest_lat"]).filter(longitude__gte=bounds["_southWest_lng"])
         return observations
  

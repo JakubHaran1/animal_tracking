@@ -33,7 +33,7 @@ export const BoundsReader = ({
       boundsRef.current._northEast.lng - newBounds._northEast.lng,
     );
 
-    const moveEnough = latDiff >= latSize * 0.3 || lngDiff >= lngSize * 0.3;
+    const moveEnough = latDiff >= latSize * 0.2 || lngDiff >= lngSize * 0.2;
     console.log(latDiff, latSize * 0.3);
     if (moveEnough) {
       boundsRef.current = newBounds;

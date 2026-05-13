@@ -86,6 +86,7 @@ class ObservationSerializer(ModelSerializer):
         fields = [
             "id",
             "title",
+            "description",
             "img",
             "img_thumbnail",
             "latitude",

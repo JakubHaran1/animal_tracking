@@ -129,7 +129,7 @@ export default function ImageCropper({
           accept="image/jpeg,image/png"
           ref={inputRef}
           // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
-
+          required
           onChange={onSelect}
           className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
         />

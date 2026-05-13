@@ -53,13 +53,13 @@ export function AddObservationModal() {
     const latitude = activeObservationCoords.latitude;
     const longitude = activeObservationCoords.longitude;
     try {
-      const response = await observationsService.createObservation({
+      await observationsService.createObservation({
         ...form,
         latitude,
         longitude,
         img,
       });
-      console.log(response);
+
       setForm(initialFormState);
       onCloseModal();
     } catch (err) {
@@ -98,6 +98,7 @@ export function AddObservationModal() {
               id="title"
               type="text"
               value={form.title}
+              required
               onChange={(event) => handleChangeInputValue(event, "title")}
               className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
             />
@@ -112,6 +113,7 @@ export function AddObservationModal() {
             <textarea
               id="description"
               value={form.description}
+              required
               onChange={(event) => {
                 handleChangeInputValue(event, "description");
               }}

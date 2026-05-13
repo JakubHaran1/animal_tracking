@@ -3,6 +3,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from uuid import uuid4
 
+def create_obs_img_path(instance,filename):
+    return f'observations/{instance.author.id}/{instance.title}/{filename}'
+
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid4)
@@ -27,13 +30,13 @@ class ObservationModel(models.Model):
         "Users"), related_name='observations', on_delete=models.CASCADE)
     species = models.ForeignKey(SpeciesModel, verbose_name=(
         "species"), related_name="obsertvations", on_delete=models.CASCADE,null=True)
-    # Przy flushu bazy danych zmienic na false
-    description = models.TextField(max_length=2 ,null=False)
+
+    description = models.TextField(max_length=200)
     title = models.CharField(max_length=100)
     img = models.ImageField(
-        upload_to='observations/', height_field=None, width_field=None, max_length=None)
+        upload_to=create_obs_img_path, height_field=None, width_field=None, max_length=None)
     img_thumbnail = models.ImageField(
-        upload_to='observations/', height_field=None, width_field=None, max_length=None,default="")
+      height_field=None, width_field=None, max_length=None,default="")
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
     date = models.DateField(auto_now_add=True)

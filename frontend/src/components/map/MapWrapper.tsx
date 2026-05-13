@@ -4,6 +4,7 @@ import ActiveMarker from "./markers/ActiveMarker";
 import { BoundsType, CoordsType, Observation } from "../../types";
 import ObsMarker from "./markers/ObsMarker";
 import { BoundsReader } from "./BoundsReader";
+import { useAuth } from "../../context/AuthContext";
 
 const DEFAULT_MAP_COORDS: CoordsType = {
   latitude: 52.2297,
@@ -11,18 +12,16 @@ const DEFAULT_MAP_COORDS: CoordsType = {
 };
 
 type MapWrapperProps = {
-  canAddObservation: boolean;
   observations: Observation[];
   setBounds: React.Dispatch<React.SetStateAction<BoundsType | null>>;
   bounds: BoundsType | null;
 };
 export default function MapWrapper({
-  canAddObservation,
   observations,
   setBounds,
 }: MapWrapperProps) {
   const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
-
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
     if (!navigator.geolocation) {
       setCoords(DEFAULT_MAP_COORDS);
@@ -54,9 +53,11 @@ export default function MapWrapper({
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <BoundsReader setBounds={setBounds} />
-          {canAddObservation && <ActiveMarker />}
+          {isAuthenticated && <ActiveMarker />}
           {observations.length > 0 &&
-            observations.map((obs) => <ObsMarker observation={obs} />)}
+            observations.map((obs) => (
+              <ObsMarker key={obs.id} observation={obs} />
+            ))}
         </MapContainer>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
