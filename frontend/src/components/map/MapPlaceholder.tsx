@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 
 import { BoundsType, Observation } from "../../types";
 
+import MapWrapper from "./MapWrapper";
+import ObservationsList from "../observations/ObservationsList";
+import ObservationSearch from "../observations/ObservationSearch";
 import { useAuth } from "../../context/AuthContext";
 import { useObservationContext } from "../../context/ObservationContext";
 
-import MapWrapper from "./MapWrapper";
-import { ObservationsList } from "../observations/ObservationsList";
 import { observationsService } from "../../services";
 
 export function MapPlaceholder() {
@@ -14,7 +15,8 @@ export function MapPlaceholder() {
   const { isAuthenticated, user } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [bounds, setBounds] = useState<BoundsType | null>(null);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFilter, setSearchFilter] = useState("title");
   useEffect(() => {
     if (!bounds) {
       return;
@@ -56,6 +58,7 @@ export function MapPlaceholder() {
           bounds={bounds}
         />
       </div>
+
       <ObservationsList observations={observations} />
     </section>
   );

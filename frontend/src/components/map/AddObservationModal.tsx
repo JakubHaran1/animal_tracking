@@ -13,12 +13,14 @@ const initialFormState: ObservationDraft = {
 interface ErrorStateType {
   title: string[];
   description: string[];
+  other: string;
 }
 export function AddObservationModal() {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
   const [errors, setErrors] = useState<ErrorStateType>({
     title: [],
     description: [],
+    other: "",
   });
 
   const { isAddObservationOpen, onCloseModal, activeObservationCoords } =
@@ -46,8 +48,13 @@ export function AddObservationModal() {
       !activeObservationCoords?.latitude ||
       !activeObservationCoords?.longitude
     ) {
-      setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
-      setForm(initialFormState);
+      console.log(
+        img,
+        activeObservationCoords?.latitude,
+        activeObservationCoords?.longitude,
+      );
+      console.log("error");
+      // setForm(initialFormState);
       return;
     }
     const latitude = activeObservationCoords.latitude;
@@ -92,6 +99,7 @@ export function AddObservationModal() {
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <p className="text-red-600">{errors.other}</p>
           <label htmlFor="title" className="block text-sm text-green-900">
             Tytuł
             <input
@@ -144,16 +152,6 @@ export function AddObservationModal() {
             className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-green-600"
           >
             Zapisz obserwację
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              console.log(errors);
-            }}
-            type="submit"
-            className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-green-600"
-          >
-            e
           </button>
         </form>
       </div>

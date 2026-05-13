@@ -21,10 +21,12 @@ export function Navbar({
   onLogoutClick,
 }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-20 border-b border-green-200 bg-lime-100/95 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-green-200 bg-lime-100/95 backdrop-blur overflow-hidden">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 xl:px-6 2xl:max-w-[1800px] 2xl:px-8 2xl:py-4">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold text-green-900 2xl:text-2xl">Animal Tracking</span>
+          <span className="text-lg font-semibold text-green-900 2xl:text-2xl">
+            Animal Tracking
+          </span>
         </div>
 
         <nav className="flex items-center gap-1 2xl:gap-2">

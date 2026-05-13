@@ -10,6 +10,8 @@ export interface Observation {
   userId: string;
   speciesId: number;
   title: string;
+  img: string;
+  img_thumb: string;
   description: string;
   latitude: number;
   longitude: number;

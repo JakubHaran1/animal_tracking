@@ -42,6 +42,7 @@ export function ObservationProvider({ children }: ObservationProviderProps) {
       },
 
       handleMapClick: (coords: LatLng) => {
+        console.log("coords", coords);
         setActiveObservationCoords({
           latitude: coords.lat,
           longitude: coords.lng,
