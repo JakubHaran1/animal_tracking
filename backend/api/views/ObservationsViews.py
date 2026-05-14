@@ -4,13 +4,11 @@ from django.http import HttpResponse
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.parsers import FormParser,  MultiPartParser
-from rest_framework.filters import SearchFilter
-from rest_framework.decorators import action
-from rest_framework.response import Response
-
+from django_filters.rest_framework import DjangoFilterBackend
 
 from api.serializers.ObservationSerializers import ObservationSerializer, SpeciesSerialiser
 from api.models import SpeciesModel, ObservationModel
+from api.custom_filters.ObservationFilterBackend import ObservationFilter
 
 
 class SpeciesViewSet(ModelViewSet):
@@ -22,8 +20,11 @@ class ObservationViewSet(ModelViewSet):
     queryset = ObservationModel.objects.all()
     serializer_class = ObservationSerializer
     parser_classes = [FormParser,  MultiPartParser]
-    filter_backends = [SearchFilter]
-    search_fields = ["author"]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ObservationFilter
+
+    # filterset_fields = ('title', 'author','species')
+
 
 
     def perform_create(self, serializer):
@@ -31,8 +32,12 @@ class ObservationViewSet(ModelViewSet):
 
     def get_queryset(self):
         bounds = self.request.query_params.dict()
-      
-        observations = self.queryset.filter(latitude__lte=bounds["_northEast_lat"]).filter(longitude__lte=bounds["_northEast_lng"]).filter(latitude__gte=bounds["_southWest_lat"]).filter(longitude__gte=bounds["_southWest_lng"])
+        observations = self.queryset.all()
+        print(bounds)
+        if "_northEast_lat" in bounds.keys():
+             observations = observations.filter(latitude__lte=bounds["_northEast_lat"]).filter(longitude__lte=bounds["_northEast_lng"]).filter(latitude__gte=bounds["_southWest_lat"]).filter(longitude__gte=bounds["_southWest_lng"])
+            
         return observations
+       
  
        

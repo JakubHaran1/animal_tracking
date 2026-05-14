@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { CheckedFilterTypes } from "../../types";
 
 type SearchProps = {
   handleChangeFilter: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  generatePlaceholder: () => string;
+  generatePlaceholder: string;
   checked: CheckedFilterTypes;
   handleFilter: (
     e: React.SubmitEvent<HTMLFormElement>,
@@ -65,7 +65,7 @@ export default function ObservationSearch({
           <input
             type="search"
             ref={input}
-            placeholder={generatePlaceholder()}
+            placeholder={generatePlaceholder}
             className="w-full rounded-md border border-green-200 px-3 py-2 text-sm text-green-900 outline-none focus:border-green-600"
           />
           <button

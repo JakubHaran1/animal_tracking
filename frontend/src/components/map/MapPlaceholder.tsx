@@ -37,6 +37,7 @@ export function MapPlaceholder() {
 
     if (checked[name]) {
       setChecked((res) => ({ ...res, [name]: false }));
+      setSearchFilter((res) => ({ ...res, [name]: "" }));
     } else {
       setChecked((res) => ({ ...res, [name]: true }));
     }
@@ -79,7 +80,7 @@ export function MapPlaceholder() {
         valueIndex++;
       }
     });
-    console.log(filters);
+
     setSearchFilter({
       title: filters.title,
       author: filters.author,
@@ -94,8 +95,8 @@ export function MapPlaceholder() {
     observationsService
       .getObservations(bounds, searchFilter)
       .then((obs) => setObservations([...obs]));
-  }, [bounds]);
-  // tutaj dodać searchFilter do dependencies
+  }, [bounds, searchFilter, checked]);
+
   return (
     <section className="space-y-4 2xl:space-y-5">
       <div className="rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm 2xl:p-5">
@@ -129,7 +130,7 @@ export function MapPlaceholder() {
 
       <ObservationSearch
         handleChangeFilter={handleChangeFilter}
-        generatePlaceholder={() => generatePlaceholder}
+        generatePlaceholder={generatePlaceholder}
         checked={checked}
         handleFilter={handleFilter}
       />

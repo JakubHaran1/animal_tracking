@@ -11,19 +11,25 @@ export const observationsService = {
     bounds: BoundsType,
     queryObj: ObservationFilterTypes,
   ): Promise<Observation[]> {
-    return (
-      await privateApi.get("/observations", {
-        params: {
-          _northEast_lat: bounds._northEast.lat,
-          _northEast_lng: bounds._northEast.lng,
-          _southWest_lat: bounds._southWest.lat,
-          _southWest_lng: bounds._southWest.lng,
-          title: queryObj.title || undefined,
-          author: queryObj.author || undefined,
-          species: queryObj.species || undefined,
-        },
-      })
-    ).data;
+    const params =
+      queryObj.title || queryObj.author || queryObj.species
+        ? {
+            title: queryObj.title || undefined,
+            author: queryObj.author || undefined,
+            species: queryObj.species || undefined,
+          }
+        : {
+            _northEast_lat: bounds._northEast.lat,
+            _northEast_lng: bounds._northEast.lng,
+            _southWest_lat: bounds._southWest.lat,
+            _southWest_lng: bounds._southWest.lng,
+          };
+
+    const response = await privateApi.get("/observations", {
+      params,
+    });
+
+    return response.data;
   },
 
   async createObservation(payload: CreateObservationPayload) {
