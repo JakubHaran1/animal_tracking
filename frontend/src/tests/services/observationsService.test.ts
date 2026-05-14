@@ -1,5 +1,14 @@
+import { privateApi } from "../../api/privateApi";
+
+vi.mock("../../api/privateApi", () => ({
+  privateApi: {
+    post: vi.fn(),
+  },
+}));
+
 describe("observationsService", () => {
   afterEach(() => {
+    vi.resetAllMocks();
     vi.resetModules();
   });
 
@@ -29,24 +38,35 @@ describe("observationsService", () => {
     expect(filtered.every((observation) => observation.userId === includedUserId)).toBe(true);
   });
 
-  it("creates and prepends a new observation", async () => {
+  it("creates and sends observation to API", async () => {
+    const mockResponse = {
+      data: {
+        id: "o-1",
+        userId: "u-1",
+        speciesId: 7,
+        title: "Nowa obserwacja",
+        description: "Test opisu",
+        latitude: 50.1,
+        longitude: 19.9,
+      },
+    };
+
+    vi.mocked(privateApi.post).mockResolvedValue(mockResponse);
+
     const { observationsService } = await import("../../services/observationsService");
 
     const created = await observationsService.createObservation({
-      userId: "u-1",
-      speciesId: 7,
       title: "Nowa obserwacja",
       description: "Test opisu",
       latitude: 50.1,
       longitude: 19.9,
+      img: new File([""], "test.jpg"),
     });
 
-    expect(created.id).toContain("o-local-");
-    expect(created.userId).toBe("u-1");
-    expect(created.speciesId).toBe(7);
-    expect(created.title).toBe("Nowa obserwacja");
-
-    const all = await observationsService.getObservations();
-    expect(all[0]).toEqual(created);
+    expect(privateApi.post).toHaveBeenCalledWith(
+      "/observations/",
+      expect.any(FormData),
+    );
+    expect(created).toEqual(mockResponse);
   });
 });
