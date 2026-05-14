@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { BoundsType, Observation } from "../../types";
+import {
+  BoundsType,
+  CheckedFilterTypes,
+  Observation,
+  ObservationFilterTypes,
+} from "../../types";
 
 import MapWrapper from "./MapWrapper";
 import ObservationsList from "../observations/ObservationsList";
@@ -12,22 +17,85 @@ import { observationsService } from "../../services";
 
 export function MapPlaceholder() {
   const { onOpenModal } = useObservationContext();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [bounds, setBounds] = useState<BoundsType | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchFilter, setSearchFilter] = useState("title");
+
+  const [searchFilter, setSearchFilter] = useState<ObservationFilterTypes>({
+    title: "",
+    author: "",
+    species: "",
+  });
+  const [checked, setChecked] = useState<CheckedFilterTypes>({
+    title: false,
+    author: false,
+    species: false,
+  });
+
+  const handleChangeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.id as keyof ObservationFilterTypes;
+
+    if (checked[name]) {
+      setChecked((res) => ({ ...res, [name]: false }));
+    } else {
+      setChecked((res) => ({ ...res, [name]: true }));
+    }
+  };
+
+  const generatePlaceholder = useMemo(() => {
+    const labels = {
+      title: "tytule",
+      author: "autorze",
+      species: "gatunku",
+    };
+
+    const activeFilters = Object.entries(checked)
+      .filter(([_, value]) => value)
+      .map(([k]) => labels[k as keyof ObservationFilterTypes]);
+
+    if (activeFilters.length == 0) return `Szukaj`;
+    return `Szukaj po ${activeFilters.join(",")}`;
+  }, [checked]);
+
+  const handleFilter = (
+    e: React.SubmitEvent<HTMLFormElement>,
+    query: string | undefined,
+  ) => {
+    e.preventDefault();
+    if (!query) return;
+
+    const values = query.split(",").map((f) => f.trim());
+
+    const filters = {
+      title: "",
+      author: "",
+      species: "",
+    };
+    let valueIndex = 0;
+
+    Object.entries(checked).forEach(([key, isChecked]) => {
+      if (isChecked) {
+        filters[key as keyof ObservationFilterTypes] = values[valueIndex] || "";
+        valueIndex++;
+      }
+    });
+    console.log(filters);
+    setSearchFilter({
+      title: filters.title,
+      author: filters.author,
+      species: filters.species,
+    });
+  };
+
   useEffect(() => {
     if (!bounds) {
       return;
     }
     observationsService
-      .getObservations(bounds)
+      .getObservations(bounds, searchFilter)
       .then((obs) => setObservations([...obs]));
-    if (!isAuthenticated || !user || !bounds) {
-      return;
-    }
   }, [bounds]);
+  // tutaj dodać searchFilter do dependencies
   return (
     <section className="space-y-4 2xl:space-y-5">
       <div className="rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm 2xl:p-5">
@@ -59,6 +127,13 @@ export function MapPlaceholder() {
         />
       </div>
 
+      <ObservationSearch
+        handleChangeFilter={handleChangeFilter}
+        generatePlaceholder={() => generatePlaceholder}
+        checked={checked}
+        handleFilter={handleFilter}
+      />
+      {<p className="text-xs">Znaleziono {observations.length} obserwacji</p>}
       <ObservationsList observations={observations} />
     </section>
   );

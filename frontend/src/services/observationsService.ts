@@ -1,8 +1,16 @@
 import { privateApi } from "../api/privateApi";
-import { CreateObservationPayload, Observation, BoundsType } from "../types";
+import {
+  CreateObservationPayload,
+  Observation,
+  BoundsType,
+  ObservationFilterTypes,
+} from "../types";
 
 export const observationsService = {
-  async getObservations(bounds: BoundsType): Promise<Observation[]> {
+  async getObservations(
+    bounds: BoundsType,
+    queryObj: ObservationFilterTypes,
+  ): Promise<Observation[]> {
     return (
       await privateApi.get("/observations", {
         params: {
@@ -10,6 +18,9 @@ export const observationsService = {
           _northEast_lng: bounds._northEast.lng,
           _southWest_lat: bounds._southWest.lat,
           _southWest_lng: bounds._southWest.lng,
+          title: queryObj.title || undefined,
+          author: queryObj.author || undefined,
+          species: queryObj.species || undefined,
         },
       })
     ).data;

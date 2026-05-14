@@ -1,5 +1,3 @@
-import { ImageCropperHandle } from "./form";
-
 export interface CoordsType {
   latitude: number;
   longitude: number;
@@ -32,3 +30,15 @@ export interface ObservationDraft {
   title: string;
   description: string;
 }
+
+export type ObservationFilterTypes = {
+  title: string;
+  author: string;
+  species: string;
+};
+
+export type CheckedFilterTypes = {
+  title: boolean;
+  author: boolean;
+  species: boolean;
+};
