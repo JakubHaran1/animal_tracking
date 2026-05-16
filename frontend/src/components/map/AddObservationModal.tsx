@@ -54,7 +54,7 @@ export function AddObservationModal() {
         activeObservationCoords?.longitude,
       );
       console.log("error");
-      // setForm(initialFormState);
+
       return;
     }
     const latitude = activeObservationCoords.latitude;

@@ -23,17 +23,13 @@ class ObservationViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ObservationFilter
 
-    # filterset_fields = ('title', 'author','species')
-
-
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
     def get_queryset(self):
         bounds = self.request.query_params.dict()
         observations = self.queryset.all()
-        print(bounds)
+     
         if "_northEast_lat" in bounds.keys():
              observations = observations.filter(latitude__lte=bounds["_northEast_lat"]).filter(longitude__lte=bounds["_northEast_lng"]).filter(latitude__gte=bounds["_southWest_lat"]).filter(longitude__gte=bounds["_southWest_lng"])
             
