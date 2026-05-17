@@ -15,7 +15,11 @@ interface ErrorStateType {
   description: string[];
   other: string;
 }
-export function AddObservationModal() {
+export function AddObservationModal({
+  setObservationSaved,
+}: {
+  setObservationSaved: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
   const [errors, setErrors] = useState<ErrorStateType>({
     title: [],
@@ -68,6 +72,7 @@ export function AddObservationModal() {
       });
 
       setForm(initialFormState);
+      setObservationSaved(true);
       onCloseModal();
     } catch (err) {
       if (isAxiosError(err)) {

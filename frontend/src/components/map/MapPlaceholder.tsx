@@ -15,7 +15,11 @@ import { useObservationContext } from "../../context/ObservationContext";
 
 import { observationsService } from "../../services";
 
-export function MapPlaceholder() {
+export function MapPlaceholder({
+  observationSaved,
+}: {
+  observationSaved: boolean;
+}) {
   const { onOpenModal } = useObservationContext();
   const { isAuthenticated } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
@@ -96,7 +100,7 @@ export function MapPlaceholder() {
     observationsService
       .getObservations(bounds, searchFilter)
       .then((obs) => setObservations([...obs]));
-  }, [bounds, searchFilter, checked]);
+  }, [bounds, searchFilter, checked, observationSaved]);
 
   return (
     <section className="space-y-4 2xl:space-y-5">
