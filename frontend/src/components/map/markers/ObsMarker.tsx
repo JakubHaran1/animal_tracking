@@ -1,32 +1,44 @@
-import { Marker, Popup, useMap, useMapEvents } from "react-leaflet";
-import { ObservationIcon } from "../icons/ObservationIcon";
+import { Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 import { Observation } from "../../../types";
-import { LatLng } from "leaflet";
+
+import { ObservationIcon } from "../icons/ObservationIcon";
+import { useRef, useEffect } from "react";
 
 type ObsMarkerProps = {
+  openObservationID: string;
+  setOpenObservationID: React.Dispatch<React.SetStateAction<string>>;
   observation: Observation;
 };
-export default function ObsMarker({ observation }: ObsMarkerProps) {
-  const map = useMapEvents({
-    click(clickEv) {
-      map.locate();
-      handleMapClick(clickEv.latlng);
-    },
-    // locationfound(e) {
-    //   console.log(e.latlng);
-    //   map.flyTo(e.latlng, map.getZoom());
-    // },
-  });
-  const renderCurrentPopUp = () => {
-    const mapInstance = useMap();
-    map.openPopup;
-  };
+
+export default function ObsMarker({
+  openObservationID,
+  setOpenObservationID,
+  observation,
+}: ObsMarkerProps) {
+  const markerRef = useRef<L.Marker>(null);
+
+  useEffect(() => {
+    if (!markerRef.current) return;
+    if (openObservationID === observation.id) markerRef.current.openPopup();
+    else markerRef.current.closePopup();
+  }, [openObservationID]);
   return (
     <Marker
+      ref={markerRef}
       position={[observation.latitude, observation.longitude]}
       icon={ObservationIcon}
+      eventHandlers={{
+        click: () => {
+          if (openObservationID === observation.id) setOpenObservationID("");
+          else setOpenObservationID(observation.id);
+        },
+        popupclose: () => {
+          setOpenObservationID("");
+        },
+      }}
     >
-      <Popup className="custom-popup " minWidth={200} maxWidth={200}>
+      <Popup className="custom-popup" minWidth={200} maxWidth={200}>
         <h3 className="overflow-hidden border-b-1 pb-2 ">
           {observation.title}
         </h3>
@@ -41,7 +53,4 @@ export default function ObsMarker({ observation }: ObsMarkerProps) {
       </Popup>
     </Marker>
   );
-}
-function handleMapClick(latlng: LatLng) {
-  throw new Error("Function not implemented.");
 }

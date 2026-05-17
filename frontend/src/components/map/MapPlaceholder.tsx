@@ -20,6 +20,7 @@ export function MapPlaceholder() {
   const { isAuthenticated } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [bounds, setBounds] = useState<BoundsType | null>(null);
+  const [openObservationID, setOpenObservationID] = useState("");
 
   const [searchFilter, setSearchFilter] = useState<ObservationFilterTypes>({
     title: "",
@@ -122,9 +123,10 @@ export function MapPlaceholder() {
 
       <div className="flex h-[420px] items-center justify-center relative z-0 rounded-xl border-2 border-dashed border-green-300 bg-gradient-to-br from-lime-100 to-amber-100 text-center 2xl:h-[560px]">
         <MapWrapper
+          openObservationID={openObservationID}
+          setOpenObservationID={setOpenObservationID}
           observations={observations}
           setBounds={setBounds}
-          bounds={bounds}
         />
       </div>
 
@@ -135,7 +137,11 @@ export function MapPlaceholder() {
         handleFilter={handleFilter}
       />
       {<p className="text-xs">Znaleziono {observations.length} obserwacji</p>}
-      <ObservationsList observations={observations} />
+      <ObservationsList
+        openObservationID={openObservationID}
+        setOpenObservationID={setOpenObservationID}
+        observations={observations}
+      />
     </section>
   );
 }
