@@ -1,4 +1,4 @@
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { Observation } from "../../../types";
 
@@ -17,11 +17,14 @@ export default function ObsMarker({
   observation,
 }: ObsMarkerProps) {
   const markerRef = useRef<L.Marker>(null);
-
+  const mapInstance = useMap();
   useEffect(() => {
-    if (!markerRef.current) return;
-    if (openObservationID === observation.id) markerRef.current.openPopup();
-    else markerRef.current.closePopup();
+    const marker = markerRef.current;
+    if (!marker) return;
+    if (openObservationID === observation.id) {
+      marker.openPopup();
+      mapInstance.flyTo(marker.getLatLng());
+    } else marker.closePopup();
   }, [openObservationID]);
   return (
     <Marker
