@@ -153,14 +153,14 @@ export function MapPlaceholder({
           _listType=""
         />
       </section>
-      {createPortal(
-        <GetObservationModal
-          openObservation={openObservation}
-          isOpenObsModal={isOpenObsModal}
-          setIsOpenObsModal={setIsOpenObsModal}
-        />,
-        document.body,
-      )}
+      {isOpenObsModal &&
+        createPortal(
+          <GetObservationModal
+            openObservation={openObservation}
+            setIsOpenObsModal={setIsOpenObsModal}
+          />,
+          document.body,
+        )}
     </>
   );
 }

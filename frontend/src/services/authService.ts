@@ -34,6 +34,7 @@ export const authService = {
   },
   async getUser(): Promise<User> {
     const res = await getDataAuth<User>("/users/me/");
+    console.log(res);
     return res;
   },
 };

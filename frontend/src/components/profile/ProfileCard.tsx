@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from "react";
-import { User } from "../../types";
-
+import { User, Observation } from "../../types";
+import ObservationsList from "../observations/ObservationsList";
+import { createPortal } from "react-dom";
+import EditObservationModal from "../observations/EditObservationModal";
 interface ProfileCardProps {
   user: User;
   title?: string;
@@ -27,6 +29,9 @@ export function ProfileCard({
   enableObservationFilters = false,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [openObservation, setOpenObservation] = useState<Observation | null>(
+    null,
+  );
   const [searchFilter, setSearchFilter] = useState<ProfileObservationFilters>({
     title: "",
     date: "",
@@ -107,7 +112,10 @@ export function ProfileCard({
       if (titleQuery && !publication.title.toLowerCase().includes(titleQuery)) {
         return false;
       }
-      if (dateQuery && !publication.createdAt.toLowerCase().includes(dateQuery)) {
+      if (
+        dateQuery &&
+        !publication.createdAt.toLowerCase().includes(dateQuery)
+      ) {
         return false;
       }
       if (
@@ -153,7 +161,12 @@ export function ProfileCard({
       </dl>
 
       <div className="mt-6 border-t border-green-200 pt-4">
-        <h2 className="mb-3 text-base font-semibold text-green-900">Dodane publikacje</h2>
+        <h2 className="mb-3 text-base font-semibold text-green-900">
+          Dodane publikacje
+        </h2>
+        <button onClick={() => console.log(user.publications)}>
+          show user
+        </button>
         {enableObservationFilters && user.publications.length > 0 ? (
           <>
             <div className="flex flex-col md:flex-row items-start gap-4">
@@ -219,22 +232,22 @@ export function ProfileCard({
         {user.publications.length === 0 ? (
           <p className="text-sm text-green-800">Brak publikacji.</p>
         ) : (
-          <ul className="space-y-2">
-            {filteredPublications.map((publication) => (
-              <li
-                key={publication.id}
-                className="rounded-md border border-green-200 bg-white/70 px-3 py-2 text-sm"
-              >
-                <p className="font-medium text-green-950">{publication.title}</p>
-                <p className="text-green-800">Data: {publication.createdAt}</p>
-                {publication.speciesName ? (
-                  <p className="text-green-800">
-                    Gatunek: {publication.speciesName}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ul>
+          <>
+            <ObservationsList
+              openObservation={openObservation}
+              setOpenObservation={setOpenObservation}
+              observations={user.publications}
+              _listType="edit"
+            />
+            {openObservation &&
+              createPortal(
+                <EditObservationModal
+                  openObservation={openObservation}
+                  setOpenObservation={setOpenObservation}
+                />,
+                document.body,
+              )}
+          </>
         )}
       </div>
     </section>

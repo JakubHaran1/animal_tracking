@@ -82,7 +82,7 @@ class UserViewSet(ModelViewSet):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            raise AuthenticationFailed("Provided credentials aren't correct")
+            raise AuthenticationFailed("Podane dane nie są poprawne")
 
         if not user.is_verified:
             raise AuthenticationFailed("Konto nie zostało jeszcze zweryfikowane. Sprawdź email.")
@@ -119,4 +119,5 @@ class UserViewSet(ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-        return Response(UserSerializer(request.user).data)
+
+        return Response(UserSerializer(request.user,context={"request":request}).data)

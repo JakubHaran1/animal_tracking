@@ -1,16 +1,14 @@
 import { Observation } from "../../types";
 type GetObsModalProps = {
-  isOpenObsModal: boolean;
   setIsOpenObsModal: React.Dispatch<React.SetStateAction<boolean>>;
   openObservation: Observation | null;
 };
 
 export default function GetObservationModal({
-  isOpenObsModal,
   setIsOpenObsModal,
   openObservation,
 }: GetObsModalProps) {
-  if (isOpenObsModal === false || openObservation == null) return "";
+  if (openObservation == null) return "";
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-950/40 px-4">
       <div className="w-full max-w-xl rounded-2xl border border-green-200 bg-lime-50 p-6 shadow-xl max-h-[90vh] overflow-y-scroll">

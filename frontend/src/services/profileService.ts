@@ -1,10 +1,13 @@
 import { isAxiosError } from "axios";
 import { privateApi } from "../api/privateApi";
-import { Publication, User } from "../types";
+import { Observation, User } from "../types";
 
 interface ObservationResponse {
   id: number;
   title: string;
+  img: string;
+  img_thumbnail: string;
+  description: string;
   date: string;
   species_name?: string | null;
 }
@@ -20,9 +23,12 @@ interface UserProfileResponse {
 
 const mapObservationToPublication = (
   observation: ObservationResponse,
-): Publication => ({
+): Observation => ({
   id: observation.id.toString(),
   title: observation.title,
+  img: observation.img,
+  img_thumbnail: observation.img_thumbnail,
+  description: observation.description,
   createdAt: observation.date,
   speciesName: observation.species_name ?? "",
 });

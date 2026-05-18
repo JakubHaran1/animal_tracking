@@ -26,7 +26,7 @@ class ObservationSummarySerializer(ModelSerializer):
 
     class Meta:
         model = ObservationModel
-        fields = ["id", "title", "date", "species_name"]
+        fields = ["id", "title","img","img_thumbnail","description", "date", "species_name"]
 
 
 class UserSerializer(ModelSerializer):
@@ -60,7 +60,7 @@ class UserCreateSerializer(ModelSerializer):
     def validate(self, data):
         if data["confirm_password"] != data["password"]:
             raise ValidationError(
-                {"confirm_password": "Password and confirm password aren't the same"})
+                {"confirm_password": "Hasło i potwierdź hasło nie są takie same"})
         return data
 
     def create(self, validated_data):

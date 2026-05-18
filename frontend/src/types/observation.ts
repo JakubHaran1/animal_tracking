@@ -5,11 +5,10 @@ export interface CoordsType {
 
 export interface Observation {
   id: string;
-  userId: string;
-  speciesId: number;
+  speciesName: string;
   title: string;
   img: string;
-  img_thumb: string;
+  img_thumbnail: string;
   description: string;
   latitude: number;
   longitude: number;
