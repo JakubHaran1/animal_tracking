@@ -4,6 +4,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 import ReactCrop, { makeAspectCrop, type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
@@ -18,6 +19,7 @@ interface ImageCropperProps {
   aspectRatioHeight: number;
   maxContainerHeight: string;
   ref: React.Ref<ImageCropperHandle>;
+  imgReverse: string;
 }
 
 export default function ImageCropper({
@@ -27,6 +29,7 @@ export default function ImageCropper({
   aspectRatioHeight,
   maxContainerHeight,
   ref,
+  imgReverse,
 }: ImageCropperProps) {
   const [imgData, setImgData] = useState<{
     img: string;
@@ -80,6 +83,7 @@ export default function ImageCropper({
         const imgElement = new Image();
         const readerData = reader.result?.toString() || "";
         imgElement.src = readerData;
+        console.log(readerData);
         console.log("reader", readerData);
 
         imgElement.addEventListener("load", () => {
@@ -119,6 +123,17 @@ export default function ImageCropper({
 
     handleCropChange(crop);
   };
+
+  useEffect(() => {
+    if (!imgReverse || !inputRef.current) return;
+
+    setImgData({
+      img: imgReverse,
+      imgTitile: "reverse",
+    });
+
+    setCrop(undefined);
+  }, [imgReverse]);
 
   return (
     <>

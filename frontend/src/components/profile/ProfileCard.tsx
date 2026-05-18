@@ -38,7 +38,7 @@ export function ProfileCard({
     species: "",
   });
   const [checked, setChecked] = useState<ProfileObservationChecked>({
-    title: false,
+    title: true,
     date: false,
     species: false,
   });

@@ -133,6 +133,7 @@ export default function EditObservationModal({
             aspectRatioHeight={1}
             maxContainerHeight="30vh"
             ref={CropRef}
+            imgReverse={form?.img ?? ""}
           />
           <p className="text-xs text-green-700">
             Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do

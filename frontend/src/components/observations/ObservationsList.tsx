@@ -16,21 +16,31 @@ export default function ObservationsList({
   return (
     <>
       {observations.length > 0 && (
-        <ul className="space-y-3 flex flex-col items-center gap-3 overflow-y-hidden  mt-4 py-2">
+        <ul
+          className={`space-y-3 flex flex-col items-center gap-3 overflow-y-hidden  mt-4 py-2 `}
+        >
           {observations.map((obs) => {
             return (
               <li
                 onClick={() => {
+                  if (_listType) return;
                   if (openObservation?.id === obs.id) setOpenObservation(null);
                   else setOpenObservation(obs);
                 }}
                 key={obs.id}
                 className={`flex w-full md:w-3/4 hrink-0 gap-3 overflow-hidden rounded-xl border border-green-200 bg-lime-50 p-2  p:md-4 shadow-sm duration-300 ease-in
-                 ${openObservation?.id === obs.id && "bg-lime-100 -translate-y-1"}`}
+                 ${openObservation?.id === obs.id && "bg-lime-100 -translate-y-1"} ${!_listType && "cursor-pointer"}`}
               >
                 {_listType && (
-                  <button>
-                    <i className="fa-solid fa-pen-to-square"></i>
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => {
+                      if (openObservation?.id === obs.id)
+                        setOpenObservation(null);
+                      else setOpenObservation(obs);
+                    }}
+                  >
+                    <i className="fa-solid fa-pen-to-square "></i>
                   </button>
                 )}
                 <img
