@@ -1,10 +1,23 @@
 import { privateApi } from "../../api/privateApi";
+import { type BoundsType, type ObservationFilterTypes } from "../../types";
 
 vi.mock("../../api/privateApi", () => ({
   privateApi: {
+    get: vi.fn(),
     post: vi.fn(),
   },
 }));
+
+const bounds = {
+  _northEast: { lat: 50.0614, lng: 19.9366 },
+  _southWest: { lat: 49.9, lng: 19.7 },
+} as unknown as BoundsType;
+
+const emptyFilters: ObservationFilterTypes = {
+  title: "",
+  author: "",
+  species: "",
+};
 
 describe("observationsService", () => {
   afterEach(() => {
@@ -16,26 +29,44 @@ describe("observationsService", () => {
     const { observationsMock } = await import("../../mocks");
     const { observationsService } = await import("../../services/observationsService");
 
-    const observations = await observationsService.getObservations();
+    vi.mocked(privateApi.get).mockResolvedValue({ data: observationsMock });
+
+    const observations = await observationsService.getObservations(
+      bounds,
+      emptyFilters,
+    );
 
     expect(observations).toEqual(observationsMock);
+    expect(privateApi.get).toHaveBeenCalledWith("/observations", {
+      params: {
+        _northEast_lat: 50.0614,
+        _northEast_lng: 19.9366,
+        _southWest_lat: 49.9,
+        _southWest_lng: 19.7,
+      },
+    });
   });
 
-  it("filters observations by user ids", async () => {
+  it("sends filter params when filters are set", async () => {
     const { observationsService } = await import("../../services/observationsService");
 
-    const all = await observationsService.getObservations();
-    const includedUserId = all[0]?.userId;
+    vi.mocked(privateApi.get).mockResolvedValue({ data: [] });
 
-    expect(includedUserId).toBeDefined();
+    const filters: ObservationFilterTypes = {
+      title: "Sowa",
+      author: "Jan Kowalski",
+      species: "Sowa",
+    };
 
-    const filtered = await observationsService.getObservationsByUserIds([
-      includedUserId as string,
-      "missing-user",
-    ]);
+    await observationsService.getObservations(bounds, filters);
 
-    expect(filtered.length).toBeGreaterThan(0);
-    expect(filtered.every((observation) => observation.userId === includedUserId)).toBe(true);
+    expect(privateApi.get).toHaveBeenCalledWith("/observations", {
+      params: {
+        title: "Sowa",
+        author: "Jan Kowalski",
+        species: "Sowa",
+      },
+    });
   });
 
   it("creates and sends observation to API", async () => {
