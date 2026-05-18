@@ -8,9 +8,11 @@ services:
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - ./backend:/app
-      - ./backend/db.sqlite3:/app/db.sqlite3
       - ./backend/media:/app/media
 
   frontend:
@@ -29,12 +31,15 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    profiles:
-      - postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-nowatorski}
       POSTGRES_USER: ${POSTGRES_USER:-nowatorski}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nowatorski}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nowatorski"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - "5432:5432"
     volumes:

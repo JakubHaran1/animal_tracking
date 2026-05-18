@@ -6,6 +6,7 @@ interface ObservationResponse {
   id: number;
   title: string;
   date: string;
+  species_name?: string | null;
 }
 
 interface UserProfileResponse {
@@ -23,6 +24,7 @@ const mapObservationToPublication = (
   id: observation.id.toString(),
   title: observation.title,
   createdAt: observation.date,
+  speciesName: observation.species_name ?? "",
 });
 
 const toDateOnly = (value: string): string => value.split("T")[0] ?? value;

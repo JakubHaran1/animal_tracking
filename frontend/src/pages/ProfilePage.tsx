@@ -39,6 +39,7 @@ export function ProfilePage() {
     <>
       <ProfileCard
         user={user}
+        enableObservationFilters
         onEdit={() => {
           setError(null);
           setIsEditing(true);

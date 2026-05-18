@@ -22,10 +22,11 @@ class SpeciesSerialiser(ModelSerializer):
 
 
 class ObservationSummarySerializer(ModelSerializer):
+    species_name = CharField(source="species.name", read_only=True, allow_null=True)
 
     class Meta:
         model = ObservationModel
-        fields = ["id", "title", "date"]
+        fields = ["id", "title", "date", "species_name"]
 
 
 class UserSerializer(ModelSerializer):
