@@ -1,0 +1,35 @@
+
+
+POST http://127.0.0.1:8000/api/token/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"admin",
+    "password":"admin"
+}
+
+###
+POST http://127.0.0.1:8000/api/users/me/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc2MDk3MzgxLCJpYXQiOjE3NzYwOTcwODEsImp0aSI6ImFlYTdhMzUyZTM3NjQ0NzdhZGRlYTI3NTk3NDJkZjA1IiwidXNlcl9pZCI6ImUzOWMwMDAzLWE3ODctNGJlNi04ZGRmLWRlNDU1MWY5MjcxNyJ9.6ZjhJULa9xjQAQIITyXOWeozXtAwUMnDr9tJSmWmgCo
+
+{
+    "username":"admin",
+    "password":"admin"
+}
+###
+POST http://127.0.0.1:8000/api/users/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"admin",
+    "password":"admin"
+}
+###
+POST http://127.0.0.1:8000/api/users/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"admin",
+    "password":"admin"
+}
