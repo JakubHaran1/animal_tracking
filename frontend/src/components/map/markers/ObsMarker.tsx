@@ -6,14 +6,16 @@ import { ObservationIcon } from "../icons/ObservationIcon";
 import { useRef, useEffect } from "react";
 
 type ObsMarkerProps = {
-  openObservationID: string;
-  setOpenObservationID: React.Dispatch<React.SetStateAction<string>>;
+  setIsOpenObsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  openObservation: Observation | null;
+  setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
   observation: Observation;
 };
 
 export default function ObsMarker({
-  openObservationID,
-  setOpenObservationID,
+  setIsOpenObsModal,
+  openObservation,
+  setOpenObservation,
   observation,
 }: ObsMarkerProps) {
   const markerRef = useRef<L.Marker>(null);
@@ -21,11 +23,12 @@ export default function ObsMarker({
   useEffect(() => {
     const marker = markerRef.current;
     if (!marker) return;
-    if (openObservationID === observation.id) {
+
+    if (openObservation?.id === observation.id) {
       marker.openPopup();
       mapInstance.flyTo(marker.getLatLng());
     } else marker.closePopup();
-  }, [openObservationID]);
+  }, [openObservation]);
   return (
     <Marker
       ref={markerRef}
@@ -33,11 +36,11 @@ export default function ObsMarker({
       icon={ObservationIcon}
       eventHandlers={{
         click: () => {
-          if (openObservationID === observation.id) setOpenObservationID("");
-          else setOpenObservationID(observation.id);
+          if (openObservation?.id === observation.id) setOpenObservation(null);
+          else setOpenObservation(observation);
         },
         popupclose: () => {
-          setOpenObservationID("");
+          setOpenObservation(null);
         },
       }}
     >
@@ -48,6 +51,7 @@ export default function ObsMarker({
 
         <p className="line-clamp-3 mt-2 px-1 ">{observation.description}</p>
         <button
+          onClick={() => setIsOpenObsModal(true)}
           type="button"
           className="rounded-md bg-amber-400 px-3 py-1 text-sm font-semibold text-green-950 transition hover:bg-amber-300 2xl:px-4 2xl:py-1.5 2xl:text-base"
         >

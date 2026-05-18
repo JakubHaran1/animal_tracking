@@ -52,11 +52,6 @@ export function AddObservationModal({
       !activeObservationCoords?.latitude ||
       !activeObservationCoords?.longitude
     ) {
-      console.log(
-        img,
-        activeObservationCoords?.latitude,
-        activeObservationCoords?.longitude,
-      );
       console.log("error");
 
       return;

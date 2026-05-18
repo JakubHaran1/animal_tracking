@@ -12,14 +12,17 @@ const DEFAULT_MAP_COORDS: CoordsType = {
 };
 
 type MapWrapperProps = {
-  openObservationID: string;
-  setOpenObservationID: React.Dispatch<React.SetStateAction<string>>;
+  setIsOpenObsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  openObservation: Observation | null;
+  setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
   observations: Observation[];
   setBounds: React.Dispatch<React.SetStateAction<BoundsType | null>>;
 };
 export default function MapWrapper({
-  openObservationID,
-  setOpenObservationID,
+  setIsOpenObsModal,
+
+  openObservation,
+  setOpenObservation,
   observations,
   setBounds,
 }: MapWrapperProps) {
@@ -61,8 +64,9 @@ export default function MapWrapper({
             observations.map((obs) => (
               <ObsMarker
                 key={obs.id}
-                openObservationID={openObservationID}
-                setOpenObservationID={setOpenObservationID}
+                setIsOpenObsModal={setIsOpenObsModal}
+                openObservation={openObservation}
+                setOpenObservation={setOpenObservation}
                 observation={obs}
               />
             ))}
