@@ -4,12 +4,14 @@ interface ObservationsListProps {
   openObservation: Observation | null;
   setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
   observations: Observation[];
+  _listType: string;
 }
 
 export default function ObservationsList({
   openObservation,
   setOpenObservation,
   observations,
+  _listType,
 }: ObservationsListProps) {
   return (
     <>
@@ -26,8 +28,11 @@ export default function ObservationsList({
                 className={`flex w-full md:w-3/4 hrink-0 gap-3 overflow-hidden rounded-xl border border-green-200 bg-lime-50 p-2  p:md-4 shadow-sm duration-300 ease-in
                  ${openObservation?.id === obs.id && "bg-lime-100 -translate-y-1"}`}
               >
+                <button>
+                  <i className="fa-solid fa-pen-to-square"></i>
+                </button>
                 <img
-                  className=" w-1/3 rounded-sm"
+                  className="w-1/3 rounded-sm aspect-2/1"
                   src={`${obs.img}`}
                   alt="img"
                 />

@@ -35,7 +35,7 @@ export function MapPlaceholder({
     species: "",
   });
   const [checked, setChecked] = useState<CheckedFilterTypes>({
-    title: false,
+    title: true,
     author: false,
     species: false,
   });
@@ -150,6 +150,7 @@ export function MapPlaceholder({
           openObservation={openObservation}
           setOpenObservation={setOpenObservation}
           observations={observations}
+          _listType=""
         />
       </section>
       {createPortal(
