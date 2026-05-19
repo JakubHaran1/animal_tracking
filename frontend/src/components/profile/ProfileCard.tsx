@@ -5,6 +5,7 @@ interface ProfileCardProps {
   user: User;
   title?: string;
   onEdit?: () => void;
+  onChangePassword?: () => void;
   enableObservationFilters?: boolean;
 }
 
@@ -24,6 +25,7 @@ export function ProfileCard({
   user,
   title = "Mój profil",
   onEdit,
+  onChangePassword,
   enableObservationFilters = false,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -123,14 +125,27 @@ export function ProfileCard({
     <section className="rounded-xl border border-green-200 bg-lime-50 p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between gap-4">
         <h1 className="text-xl font-semibold text-green-900">{title}</h1>
-        {onEdit ? (
-          <button
-            type="button"
-            onClick={onEdit}
-            className="rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-green-950 transition hover:bg-amber-300"
-          >
-            Edytuj
-          </button>
+        {onEdit || onChangePassword ? (
+          <div className="flex flex-wrap items-center gap-2">
+            {onEdit ? (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-green-950 transition hover:bg-amber-300"
+              >
+                Edytuj
+              </button>
+            ) : null}
+            {onChangePassword ? (
+              <button
+                type="button"
+                onClick={onChangePassword}
+                className="rounded-md border border-green-700 px-3 py-1.5 text-sm font-semibold text-green-900 transition hover:bg-lime-100"
+              >
+                Zmień hasło
+              </button>
+            ) : null}
+          </div>
         ) : null}
       </div>
       <dl className="space-y-3 text-sm">
