@@ -4,9 +4,7 @@ import type { CredentialsType, RegisterPayload } from "./../../types";
 import { useAuth } from "../../context/AuthContext";
 
 import { isAxiosError } from "axios";
-import { getData } from "../../api/publicApi";
 import { authService } from "../../services/authService";
-import { getDataAuth } from "../../api/privateApi";
 
 type AuthModalView = "login" | "register";
 interface AuthModalProps {
@@ -195,52 +193,6 @@ export function AuthModal({
             >
               Zaloguj
             </button>
-            <div className="test">
-              <button
-                /* To będzie oddzielnie w serwisie, teraz testowo tu */
-                onClick={async (e) => {
-                  e.preventDefault();
-                  try {
-                    const observations = await getData("/observati=ons/");
-
-                    console.log(observations);
-                  } catch (err) {
-                    if (!isAxiosError(err)) {
-                      console.log(err);
-                      return;
-                    }
-                    console.log(err.response?.status);
-                    console.log(err.response?.statusText);
-                  }
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                Test danych
-              </button>
-
-              <button
-                /* To będzie oddzielnie w serwisie, teraz testowo tu */
-                onClick={async (e) => {
-                  e.preventDefault();
-                  try {
-                    const observations = await getDataAuth("/users/me/");
-                    console.log(observations);
-                  } catch (err) {
-                    if (!isAxiosError(err)) {
-                      console.log(err);
-                      return;
-                    }
-                    console.log(err.response?.status);
-                    console.log(err.response?.statusText);
-                  }
-                }}
-                type="submit"
-                className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
-              >
-                Test danych (autoryzacja)
-              </button>
-            </div>
             <p className="text-sm text-green-800">
               nie masz konta?{" "}
               <button
