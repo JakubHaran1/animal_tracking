@@ -142,10 +142,6 @@ export function AddObservationModal() {
             maxContainerHeight="30vh"
             ref={CropRef}
           />
-          <p className="text-xs text-green-700">
-            Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
-            backendu.
-          </p>
 
           <button
             type="submit"
