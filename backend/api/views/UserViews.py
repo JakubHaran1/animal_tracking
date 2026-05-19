@@ -83,7 +83,7 @@ class UserViewSet(ModelViewSet):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            raise AuthenticationFailed("Provided credentials aren't correct")
+            raise AuthenticationFailed("Niepoprawny login lub hasło.")
 
         if not user.is_verified:
             raise AuthenticationFailed("Konto nie zostało jeszcze zweryfikowane. Sprawdź email.")

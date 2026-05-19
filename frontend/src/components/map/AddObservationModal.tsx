@@ -73,7 +73,7 @@ export function AddObservationModal() {
       if (isAxiosError(err)) {
         setErrors((rest) => ({ ...rest, ...err.response?.data }));
       } else {
-        setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
+        setErrors((prev) => ({ ...prev, other: "Wystąpił błąd. Spróbuj ponownie." }));
       }
       setForm(initialFormState);
     }

@@ -64,7 +64,7 @@ class UserCreateSerializer(ModelSerializer):
     def validate(self, data):
         if data["confirm_password"] != data["password"]:
             raise ValidationError(
-                {"confirm_password": "Password and confirm password aren't the same"})
+                {"confirm_password": "Hasła muszą być takie same."})
         return data
 
     def create(self, validated_data):

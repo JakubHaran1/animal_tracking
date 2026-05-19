@@ -68,7 +68,7 @@ export function AuthModal({
     setErrors(undefined);
     setRegisterSuccess(undefined);
     if (!loginData.username && !loginData.password) {
-      setErrors("You have to pass username and password");
+      setErrors("Podaj nazwę użytkownika i hasło.");
       return;
     }
 
@@ -83,7 +83,7 @@ export function AuthModal({
         setErrors(err.response?.data.detail);
         return;
       }
-      setErrors("Something goes wrong");
+      setErrors("Wystąpił błąd. Spróbuj ponownie.");
     }
   };
 
@@ -168,7 +168,7 @@ export function AuthModal({
               <p className="text-center text-sm text-amber-700">{errors}</p>
             ) : null}
             <label htmlFor="Username" className="block text-sm text-green-900">
-              Username
+              Nazwa użytkownika
               <input
                 id="Username"
                 name="Username"
@@ -216,7 +216,7 @@ export function AuthModal({
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
               >
-                Data test
+                Test danych
               </button>
 
               <button
@@ -238,7 +238,7 @@ export function AuthModal({
                 type="submit"
                 className="w-full rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 hover:bg-green-600"
               >
-                auth data test
+                Test danych (autoryzacja)
               </button>
             </div>
             <p className="text-sm text-green-800">
