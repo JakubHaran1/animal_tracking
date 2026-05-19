@@ -1,10 +1,14 @@
 import { Observation } from "../../types";
 
 interface ObservationsListProps {
+  openObservation: Observation | null;
+  setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
   observations: Observation[];
 }
 
 export default function ObservationsList({
+  openObservation,
+  setOpenObservation,
   observations,
 }: ObservationsListProps) {
   return (
@@ -14,10 +18,19 @@ export default function ObservationsList({
           {observations.map((obs) => {
             return (
               <li
+                onClick={() => {
+                  if (openObservation?.id === obs.id) setOpenObservation(null);
+                  else setOpenObservation(obs);
+                }}
                 key={obs.id}
-                className="flex w-full md:w-3/4 hrink-0 gap-3 overflow-hidden rounded-xl border border-green-200 bg-lime-50 p-2  p:md-4 shadow-sm"
+                className={`flex w-full md:w-3/4 hrink-0 gap-3 overflow-hidden rounded-xl border border-green-200 bg-lime-50 p-2  p:md-4 shadow-sm duration-300 ease-in
+                 ${openObservation?.id === obs.id && "bg-lime-100 -translate-y-1"}`}
               >
-                <img className=" w-1/3" src={`${obs.img}`} alt="img" />
+                <img
+                  className=" w-1/3 rounded-sm"
+                  src={`${obs.img}`}
+                  alt="img"
+                />
                 <div className="info w-2/3">
                   <h3 className="truncate border-b-1 pb-2 ">{obs.title}</h3>
 

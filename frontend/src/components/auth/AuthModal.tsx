@@ -4,6 +4,7 @@ import type { CredentialsType, RegisterPayload } from "./../../types";
 import { useAuth } from "../../context/AuthContext";
 
 import { isAxiosError } from "axios";
+
 import { authService } from "../../services/authService";
 
 type AuthModalView = "login" | "register";
@@ -40,8 +41,12 @@ export function AuthModal({
     password: "",
     confirm_password: "",
   });
-  const [registerError, setRegisterError] = useState<string | undefined>(undefined);
-  const [registerSuccess, setRegisterSuccess] = useState<string | undefined>(undefined);
+  const [registerError, setRegisterError] = useState<string | undefined>(
+    undefined,
+  );
+  const [registerSuccess, setRegisterSuccess] = useState<string | undefined>(
+    undefined,
+  );
 
   const handleInputChange = <K extends keyof CredentialsType>(
     name: K,
@@ -193,6 +198,7 @@ export function AuthModal({
             >
               Zaloguj
             </button>
+
             <p className="text-sm text-green-800">
               nie masz konta?{" "}
               <button
@@ -207,7 +213,9 @@ export function AuthModal({
         ) : (
           <form className="space-y-4" onSubmit={handleRegisterSubmit}>
             {registerError ? (
-              <p className="text-center text-sm text-amber-700">{registerError}</p>
+              <p className="text-center text-sm text-amber-700">
+                {registerError}
+              </p>
             ) : null}
             <label htmlFor="username" className="block text-sm text-green-900">
               Nazwa użytkownika
@@ -252,7 +260,9 @@ export function AuthModal({
                 name="confirmPassword"
                 type="password"
                 value={registerData.confirm_password}
-                onChange={(e) => handleRegisterInputChange("confirm_password", e)}
+                onChange={(e) =>
+                  handleRegisterInputChange("confirm_password", e)
+                }
                 className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 outline-none focus:border-green-600"
               />
             </label>
