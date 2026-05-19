@@ -139,15 +139,27 @@ export default function ImageCropper({
     <>
       <label className="block text-sm text-green-900">
         Zdjęcie
-        <input
-          type="file"
-          accept="image/jpeg,image/png"
-          ref={inputRef}
-          // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
-          required
-          onChange={onSelect}
-          className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
-        />
+        {imgReverse ? (
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            ref={inputRef}
+            // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
+
+            onChange={onSelect}
+            className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
+          />
+        ) : (
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            ref={inputRef}
+            // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
+
+            onChange={onSelect}
+            className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
+          />
+        )}
         <p className="color-red">{error}</p>
       </label>
       {imgData.img && (
@@ -164,6 +176,7 @@ export default function ImageCropper({
             <img
               ref={imgRef}
               src={imgData.img}
+              crossOrigin="anonymous"
               // gdy załaduje sie img z przekazanego src to tworza sie crop value
               onLoad={onLoadImg}
               alt="Upload a photo of your observation"

@@ -102,6 +102,17 @@ class ObservationSerializer(ModelSerializer):
             "species",
         ]
 
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.img  = validated_data.get('img ', instance.img )
+        instance.save()
+        return instance
+
+        
+
+
+
     # def create(self, validated_data):
         # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
         # w celach ćwiczebnych
@@ -110,25 +121,4 @@ class ObservationSerializer(ModelSerializer):
         # species_obj, _ = SpeciesModel.objects.get_or_create(
         #     **species_data)
 
-        # edycja imgt do przeniesienia do signału 
-        # img = validated_data["img"]
-        # img_name, ext = os.path.splitext(img.name)
-        # new_name = img_name + '_thumbnail.webp'
-        # print(new_name)
-        # with Image.open(img) as im:
-        #     im.thumbnail((300, 300))
-        #     bufor = io.BytesIO()
-        #     im.save(bufor, 'webp')
-        #     print("im", im)
-
-        # img_new = ContentFile(bufor.getvalue(), new_name)
-        # validated_data["img"] = img_new
-
-        # observation = ObservationModel.objects.create(
-        #   **validated_data)
-        
-        # observation = ObservationModel.objects.create(
-        #     species=species_obj, **validated_data)
-        
-        # return observation
-  
+       
