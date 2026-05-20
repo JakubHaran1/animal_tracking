@@ -29,7 +29,9 @@ export default function EditObservationModal({
     other: "",
   });
 
-  const [speciesQuery, setSpeciesQuery] = useState("");
+  const [speciesQuery, setSpeciesQuery] = useState(
+    openObservation?.speciesName,
+  );
   const [speciesResults, setSpeciesResults] = useState<Species[]>([]);
   const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
   const [isSearchingSpecies, _] = useState(false);
@@ -197,7 +199,8 @@ export default function EditObservationModal({
               ))}
             </div>
 
-            {speciesQuery.length >= 2 &&
+            {speciesQuery &&
+              speciesQuery.length >= 2 &&
               speciesResults.length === 0 &&
               !selectedSpecies &&
               !isSearchingSpecies && (

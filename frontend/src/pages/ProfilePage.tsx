@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { isAxiosError } from "axios";
 import {
   ProfileCard,
@@ -8,7 +9,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { profileService } from "../services";
 import { Observation, User } from "../types";
-
+import EditObservationModal from "../components/observations/EditObservationModal";
 export function ProfilePage() {
   const { logOut } = useAuth();
   const [user, setUser] = useState<User | null>(null);
@@ -21,6 +22,9 @@ export function ProfilePage() {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
+  const [openObservation, setOpenObservation] = useState<Observation | null>(
+    null,
+  );
   useEffect(() => {
     profileService.getMyProfile().then(setUser);
   }, [observationSaved]);
@@ -109,11 +113,12 @@ export function ProfilePage() {
           setIsEditing(true);
         }}
         observationSaved={observationSaved}
-        setObservationSaved={setObservationSaved}
         onChangePassword={() => {
           setPasswordError(null);
           setIsPasswordModalOpen(true);
         }}
+        openObservation={openObservation}
+        setOpenObservation={setOpenObservation}
       />
       <ProfileEditModal
         isOpen={isEditing}
@@ -130,6 +135,15 @@ export function ProfilePage() {
         onClose={() => setIsPasswordModalOpen(false)}
         onSave={handleChangePassword}
       />
+      {openObservation &&
+        createPortal(
+          <EditObservationModal
+            openObservation={openObservation}
+            setOpenObservation={setOpenObservation}
+            setObservationSaved={setObservationSaved}
+          />,
+          document.body,
+        )}
     </>
   );
 }

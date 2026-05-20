@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { User, Observation } from "../../types";
 import ObservationsList from "../observations/ObservationsList";
-import { createPortal } from "react-dom";
-import EditObservationModal from "../observations/EditObservationModal";
+
 interface ProfileCardProps {
   user: User;
   title?: string;
@@ -10,7 +9,8 @@ interface ProfileCardProps {
   onChangePassword?: () => void;
   enableObservationFilters?: boolean;
   observationSaved: number;
-  setObservationSaved: React.Dispatch<React.SetStateAction<number>>;
+  openObservation: Observation | null;
+  setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
 }
 
 type ProfileObservationFilters = {
@@ -31,12 +31,11 @@ export function ProfileCard({
   onEdit,
   onChangePassword,
   enableObservationFilters = false,
-  setObservationSaved,
+  openObservation,
+  setOpenObservation,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [openObservation, setOpenObservation] = useState<Observation | null>(
-    null,
-  );
+
   const [searchFilter, setSearchFilter] = useState<ProfileObservationFilters>({
     title: "",
     date: "",
@@ -261,19 +260,9 @@ export function ProfileCard({
             <ObservationsList
               openObservation={openObservation}
               setOpenObservation={setOpenObservation}
-              observations={user.publications}
+              observations={filteredPublications}
               _listType="edit"
             />
-
-            {openObservation &&
-              createPortal(
-                <EditObservationModal
-                  openObservation={openObservation}
-                  setOpenObservation={setOpenObservation}
-                  setObservationSaved={setObservationSaved}
-                />,
-                document.body,
-              )}
           </>
         ) : null}
       </div>
