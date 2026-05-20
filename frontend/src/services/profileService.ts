@@ -23,6 +23,12 @@ interface UserProfileResponse {
   observations?: ObservationResponse[];
 }
 
+interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+  confirm_new_password: string;
+}
+
 const mapObservationToPublication = (
   observation: ObservationResponse,
 ): Observation => ({
@@ -73,5 +79,9 @@ export const profileService = {
       city,
     });
     return mapProfileResponse(response.data);
+  },
+
+  async changePassword(payload: ChangePasswordPayload): Promise<void> {
+    await privateApi.post("/users/change-password/", payload);
   },
 };

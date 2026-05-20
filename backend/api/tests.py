@@ -80,3 +80,66 @@ class UserEmailVerificationTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("token", response.data)
+
+
+class ChangePasswordTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="passworduser",
+            email="pw@example.com",
+            password="OldPass123!",
+        )
+        self.user.is_verified = True
+        self.user.save(update_fields=["is_verified"])
+        self.client.force_authenticate(user=self.user)
+        self.url = "/api/users/change-password/"
+
+    def test_change_password_success(self):
+        payload = {
+            "current_password": "OldPass123!",
+            "new_password": "NewPass123!",
+            "confirm_new_password": "NewPass123!",
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("NewPass123!"))
+        self.assertFalse(self.user.check_password("OldPass123!"))
+
+    def test_change_password_rejects_wrong_current(self):
+        payload = {
+            "current_password": "WrongPass123!",
+            "new_password": "NewPass123!",
+            "confirm_new_password": "NewPass123!",
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("current_password", response.data)
+
+    def test_change_password_rejects_mismatch(self):
+        payload = {
+            "current_password": "OldPass123!",
+            "new_password": "NewPass123!",
+            "confirm_new_password": "NewPass123",
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("confirm_new_password", response.data)
+
+    def test_change_password_rejects_weak_password(self):
+        payload = {
+            "current_password": "OldPass123!",
+            "new_password": "short",
+            "confirm_new_password": "short",
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("new_password", response.data)

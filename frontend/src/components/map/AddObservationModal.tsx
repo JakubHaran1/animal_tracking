@@ -73,7 +73,7 @@ export function AddObservationModal({
       if (isAxiosError(err)) {
         setErrors((rest) => ({ ...rest, ...err.response?.data }));
       } else {
-        setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
+        setErrors((prev) => ({ ...prev, other: "Wystąpił błąd. Spróbuj ponownie." }));
       }
       setForm(initialFormState);
     }
@@ -143,10 +143,6 @@ export function AddObservationModal({
             ref={CropRef}
             imgReverse=""
           />
-          <p className="text-xs text-green-700">
-            Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
-            backendu.
-          </p>
 
           <button
             type="submit"

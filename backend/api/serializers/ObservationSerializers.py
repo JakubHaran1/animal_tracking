@@ -1,7 +1,11 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer,ImageField
 
 from rest_framework.fields import DecimalField, CharField
 from rest_framework.exceptions import ValidationError
+
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 
 from django.core.files.base import ContentFile
@@ -60,7 +64,7 @@ class UserCreateSerializer(ModelSerializer):
     def validate(self, data):
         if data["confirm_password"] != data["password"]:
             raise ValidationError(
-                {"confirm_password": "Hasło i potwierdź hasło nie są takie same"})
+                {"confirm_password": "Hasła muszą być takie same."})
         return data
 
     def create(self, validated_data):
@@ -80,6 +84,38 @@ class UserUpdateSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["city"]
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, trim_whitespace=False)
+    new_password = serializers.CharField(write_only=True, trim_whitespace=False)
+    confirm_new_password = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        user = self.context.get("user") or (request.user if request else None)
+        current_password = attrs.get("current_password")
+        new_password = attrs.get("new_password")
+        confirm_new_password = attrs.get("confirm_new_password")
+
+        if not user or not user.is_authenticated:
+            raise ValidationError("Użytkownik nie jest uwierzytelniony.")
+
+        if not user.check_password(current_password):
+            raise ValidationError({"current_password": "Niepoprawne aktualne hasło."})
+
+        if new_password != confirm_new_password:
+            raise ValidationError({"confirm_new_password": "Hasła muszą być takie same."})
+
+        if current_password == new_password:
+            raise ValidationError({"new_password": "Nowe hasło musi być inne niż aktualne."})
+
+        try:
+            validate_password(new_password, user)
+        except DjangoValidationError as exc:
+            raise ValidationError({"new_password": list(exc.messages)}) from exc
+
+        return attrs
 
 
 class ObservationSerializer(ModelSerializer):

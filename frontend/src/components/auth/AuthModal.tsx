@@ -71,7 +71,7 @@ export function AuthModal({
     setErrors(undefined);
     setRegisterSuccess(undefined);
     if (!loginData.username && !loginData.password) {
-      setErrors("You have to pass username and password");
+      setErrors("Podaj nazwę użytkownika i hasło.");
       return;
     }
 
@@ -86,7 +86,7 @@ export function AuthModal({
         setErrors(err.response?.data.detail);
         return;
       }
-      setErrors("Something goes wrong");
+      setErrors("Wystąpił błąd. Spróbuj ponownie.");
     }
   };
 
@@ -171,7 +171,7 @@ export function AuthModal({
               <p className="text-center text-sm text-amber-700">{errors}</p>
             ) : null}
             <label htmlFor="Username" className="block text-sm text-green-900">
-              Username
+              Nazwa użytkownika
               <input
                 id="Username"
                 name="Username"

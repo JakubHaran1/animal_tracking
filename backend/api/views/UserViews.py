@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.models import User
 from api.serializers.ObservationSerializers import (
+    ChangePasswordSerializer,
     UserCreateSerializer,
     UserSerializer,
     UserUpdateSerializer,
@@ -82,7 +83,7 @@ class UserViewSet(ModelViewSet):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            raise AuthenticationFailed("Podane dane nie są poprawne")
+            raise AuthenticationFailed("Niepoprawny login lub hasło.")
 
         if not user.is_verified:
             raise AuthenticationFailed("Konto nie zostało jeszcze zweryfikowane. Sprawdź email.")
@@ -121,3 +122,20 @@ class UserViewSet(ModelViewSet):
             serializer.save()
 
         return Response(UserSerializer(request.user,context={"request":request}).data)
+     
+
+    @action(
+        methods=["POST"],
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        url_path="change-password",
+    )
+    def change_password(self, request):
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={"request": request, "user": request.user},
+        )
+        serializer.is_valid(raise_exception=True)
+        request.user.set_password(serializer.validated_data["new_password"])
+        request.user.save(update_fields=["password"])
+        return Response({"detail": "Hasło zostało zmienione."})
