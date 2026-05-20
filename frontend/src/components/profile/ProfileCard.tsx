@@ -34,7 +34,9 @@ export function ProfileCard({
   setObservationSaved,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const [openObservation, setOpenObservation] = useState<Observation | null>(
+    null,
+  );
   const [searchFilter, setSearchFilter] = useState<ProfileObservationFilters>({
     title: "",
     date: "",
@@ -115,7 +117,7 @@ export function ProfileCard({
     const dateQuery = normalized(searchFilter.date);
     const speciesQuery = normalized(searchFilter.species);
 
-    return publications.filter((publication) => {
+    return user.publications.filter((publication) => {
       if (titleQuery && !publication.title.toLowerCase().includes(titleQuery)) {
         return false;
       }
@@ -135,7 +137,7 @@ export function ProfileCard({
 
       return true;
     });
-  }, [enableObservationFilters, searchFilter, publications]);
+  }, [enableObservationFilters, searchFilter, user.publications]);
 
   return (
     <section className="rounded-xl border border-green-200 bg-lime-50 p-6 shadow-sm">
@@ -192,7 +194,7 @@ export function ProfileCard({
           Dodane publikacje
         </h2>
 
-        {enableObservationFilters && publications.length > 0 ? (
+        {enableObservationFilters && user.publications.length > 0 ? (
           <>
             <div className="flex flex-col items-start gap-4 md:flex-row">
               <h3>Wyszukuj po:</h3>
@@ -255,6 +257,23 @@ export function ProfileCard({
             <p className="mt-2 text-xs text-green-800">
               Znaleziono {filteredPublications.length} obserwacji
             </p>
+
+            <ObservationsList
+              openObservation={openObservation}
+              setOpenObservation={setOpenObservation}
+              observations={user.publications}
+              _listType="edit"
+            />
+
+            {openObservation &&
+              createPortal(
+                <EditObservationModal
+                  openObservation={openObservation}
+                  setOpenObservation={setOpenObservation}
+                  setObservationSaved={setObservationSaved}
+                />,
+                document.body,
+              )}
           </>
         ) : null}
       </div>

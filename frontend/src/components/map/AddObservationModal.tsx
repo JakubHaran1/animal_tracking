@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useObservationContext } from "../../context/ObservationContext";
 import ImageCropper from "../form/ImageCroppper";
 
-import { type ObservationDraft, type ImageCropperHandle } from "../../types";
+import {
+  type ObservationDraft,
+  type ImageCropperHandle,
+  Species,
+} from "../../types";
 import { observationsService } from "../../services";
 import { isAxiosError } from "axios";
 
@@ -15,13 +19,6 @@ interface ErrorStateType {
   title: string[];
   description: string[];
   other: string;
-}
-
-interface Species {
-  id: number;
-  name: string;
-  latitude?: number;
-  longitude?: number;
 }
 
 export function AddObservationModal({

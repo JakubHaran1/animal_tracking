@@ -42,3 +42,10 @@ export type CheckedFilterTypes = {
   author: boolean;
   species: boolean;
 };
+
+export type Species = {
+  id: number;
+  name: string;
+  latitude?: number;
+  longitude?: number;
+};

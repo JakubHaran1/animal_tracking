@@ -7,7 +7,7 @@ import {
 } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { profileService } from "../services";
-import { User } from "../types";
+import { Observation, User } from "../types";
 
 export function ProfilePage() {
   const { logOut } = useAuth();
@@ -16,6 +16,7 @@ export function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [observationSaved, setObservationSaved] = useState(0);
+
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
