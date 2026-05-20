@@ -45,11 +45,20 @@ export default function ObsMarker({
       }}
     >
       <Popup className="custom-popup" minWidth={200} maxWidth={200}>
-        <h3 className="overflow-hidden border-b-1 pb-2 ">
-          {observation.title}
+        <h3 className="overflow-hidden border-b-1 pb-1 mb-0 ">
+          <p className="me-2 italic">Tytuł:</p>
+          <span className="block ml-1">{observation.title}</span>
         </h3>
-
-        <p className="line-clamp-3 mt-2 px-1 ">{observation.description}</p>
+        <p>
+          {" "}
+          <span className="block italic ">Gatunek:</span>
+          <span className="block ml-1"> {observation.speciesName}</span>
+        </p>
+        <p className="line-clamp-4 ">
+          <span className="italic block">Opis:</span>
+          <span className="italic block ml-1"> {observation.description}</span>
+        </p>
+        <p className="line-clamp-4 "></p>
         <button
           onClick={() => setIsOpenObsModal(true)}
           type="button"

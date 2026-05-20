@@ -120,8 +120,8 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class ObservationSerializer(ModelSerializer):
     # species = SpeciesSerialiser()
-    author = UserSerializer(read_only=True)
-    # img = ImageField()
+    speciesName = serializers.ReadOnlyField(source='species.name')
+    # author = UserSerializer(read_only=True)
     read_only_fields = ["img_thumbnail"]
     class Meta:
         model = ObservationModel
@@ -134,8 +134,9 @@ class ObservationSerializer(ModelSerializer):
             "latitude",
             "longitude",
             "date",
-            "author",
+            # "author",
             "species",
+            "speciesName"
         ]
 
 

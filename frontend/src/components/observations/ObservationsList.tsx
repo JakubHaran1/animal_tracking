@@ -49,11 +49,19 @@ export default function ObservationsList({
                   alt="img"
                 />
 
-                <div className="info w-2/3">
-                  <h3 className="truncate border-b-1 pb-2 ">{obs.title}</h3>
-
-                  <p className="hidden md:block line-clamp-3 mt-2 px-1 ">
-                    {obs.description}
+                <div className="info w-2/3 bg-white p-3 rounded-md">
+                  <h3 className="truncate border-b-1 pb-1 ">
+                    <span className="me-2 italic">Tytuł:</span>
+                    {obs.title}
+                  </h3>
+                  <p>
+                    {" "}
+                    <span className="me-2 italic">Gatunek:</span>
+                    {obs.speciesName}
+                  </p>
+                  <p className="hidden md:block line-clamp-3 mt-2  ">
+                    <span className="me-2 italic block ">Opis:</span>
+                    <span className="px-1"> {obs.description}</span>
                   </p>
                 </div>
               </li>

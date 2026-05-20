@@ -99,6 +99,7 @@ export function MapPlaceholder({
     observationsService
       .getObservations(bounds, searchFilter)
       .then((obs) => setObservations([...obs]));
+    console.log(observations);
   }, [bounds, searchFilter, checked, observationSaved]);
 
   return (

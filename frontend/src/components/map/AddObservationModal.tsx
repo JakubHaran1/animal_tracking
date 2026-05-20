@@ -150,7 +150,7 @@ export function AddObservationModal({
       setSpeciesResults([]);
       setSelectedSpecies(null);
 
-      setObservationSaved((prev) => prev++);
+      setObservationSaved((prev) => (prev = prev + 1));
 
       onCloseModal();
     } catch (err) {

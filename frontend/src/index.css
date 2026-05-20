@@ -12,7 +12,23 @@ body {
   background-color: white;
   @apply rounded-xl border border-green-200 shadow-sm;
 }
+.custom-popup .leaflet-popup-content-wrapper p {
+  margin: 0;
+  margin-top: 10px;
 
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+.custom-popup .leaflet-popup-content-wrapper h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.custom-popup .leaflet-popup-content-wrapper button {
+  margin-top: 20px;
+}
 @media (min-width: 1920px) {
   html {
     font-size: 18px;

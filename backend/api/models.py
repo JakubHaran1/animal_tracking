@@ -25,7 +25,7 @@ class User(AbstractUser):
 
 
 class SpeciesModel(models.Model):
-    name = models.CharField(max_length=150,null=True)
+    name = models.CharField(max_length=150,unique=True)
     latitude = models.DecimalField(max_digits=8, decimal_places=6,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
 
