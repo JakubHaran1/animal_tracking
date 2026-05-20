@@ -113,15 +113,7 @@ export function MapPlaceholder({
             <h1 className="text-xl font-semibold text-green-900 2xl:text-2xl">
               Ekran główny (mapa)
             </h1>
-            {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={onOpenModal}
-                className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-green-600"
-              >
-                Dodaj obserwację
-              </button>
-            ) : null}
+           
           </div>
           <p className="text-sm text-green-800 2xl:text-base">
             Placeholder przygotowany pod szybkie podpięcie Leaflet i danych

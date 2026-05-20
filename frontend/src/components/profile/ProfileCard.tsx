@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { User } from "../../types";
+import { observationsService } from "../../services";
 
 interface ProfileCardProps {
   user: User;
@@ -27,11 +28,14 @@ export function ProfileCard({
   enableObservationFilters = false,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [publications, setPublications] = useState(user.publications);
+
   const [searchFilter, setSearchFilter] = useState<ProfileObservationFilters>({
     title: "",
     date: "",
     species: "",
   });
+
   const [checked, setChecked] = useState<ProfileObservationChecked>({
     title: false,
     date: false,
@@ -66,6 +70,7 @@ export function ProfileCard({
 
   const handleFilter = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const query = inputRef.current?.value?.trim() ?? "";
 
     if (!query) {
@@ -80,6 +85,7 @@ export function ProfileCard({
       date: "",
       species: "",
     };
+
     let valueIndex = 0;
 
     Object.entries(checked).forEach(([key, isChecked]) => {
@@ -93,36 +99,64 @@ export function ProfileCard({
     setSearchFilter(filters);
   };
 
+  const handleDeleteObservation = async (id: string | number) => {
+    const confirmed = window.confirm(
+      "Czy na pewno chcesz usunąć obserwację?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await observationsService.deleteObservation(id);
+
+      setPublications((prev) =>
+        prev.filter((publication) => publication.id !== id),
+      );
+    } catch (error) {
+      console.error("Błąd usuwania obserwacji:", error);
+      alert("Nie udało się usunąć obserwacji.");
+    }
+  };
+
   const filteredPublications = useMemo(() => {
     if (!enableObservationFilters) {
-      return user.publications;
+      return publications;
     }
 
     const normalized = (value: string) => value.trim().toLowerCase();
+
     const titleQuery = normalized(searchFilter.title);
     const dateQuery = normalized(searchFilter.date);
     const speciesQuery = normalized(searchFilter.species);
 
-    return user.publications.filter((publication) => {
+    return publications.filter((publication) => {
       if (titleQuery && !publication.title.toLowerCase().includes(titleQuery)) {
         return false;
       }
-      if (dateQuery && !publication.createdAt.toLowerCase().includes(dateQuery)) {
+
+      if (
+        dateQuery &&
+        !publication.createdAt.toLowerCase().includes(dateQuery)
+      ) {
         return false;
       }
+
       if (
         speciesQuery &&
         !publication.speciesName.toLowerCase().includes(speciesQuery)
       ) {
         return false;
       }
+
       return true;
     });
-  }, [enableObservationFilters, searchFilter, user.publications]);
+  }, [enableObservationFilters, searchFilter, publications]);
+
   return (
     <section className="rounded-xl border border-green-200 bg-lime-50 p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between gap-4">
         <h1 className="text-xl font-semibold text-green-900">{title}</h1>
+
         {onEdit ? (
           <button
             type="button"
@@ -133,19 +167,23 @@ export function ProfileCard({
           </button>
         ) : null}
       </div>
+
       <dl className="space-y-3 text-sm">
         <div>
           <dt className="font-medium text-green-800">Nazwa użytkownika</dt>
           <dd className="text-green-950">{user.username}</dd>
         </div>
+
         <div>
           <dt className="font-medium text-green-800">Email</dt>
           <dd className="text-green-950">{user.email}</dd>
         </div>
+
         <div>
           <dt className="font-medium text-green-800">Miasto</dt>
           <dd className="text-green-950">{user.city || "Nie podano"}</dd>
         </div>
+
         <div>
           <dt className="font-medium text-green-800">Dołączono</dt>
           <dd className="text-green-950">{user.joinedAt}</dd>
@@ -153,11 +191,15 @@ export function ProfileCard({
       </dl>
 
       <div className="mt-6 border-t border-green-200 pt-4">
-        <h2 className="mb-3 text-base font-semibold text-green-900">Dodane publikacje</h2>
-        {enableObservationFilters && user.publications.length > 0 ? (
+        <h2 className="mb-3 text-base font-semibold text-green-900">
+          Dodane publikacje
+        </h2>
+
+        {enableObservationFilters && publications.length > 0 ? (
           <>
-            <div className="flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col items-start gap-4 md:flex-row">
               <h3>Wyszukuj po:</h3>
+
               <div className="flex items-center gap-2">
                 <label htmlFor="title">Tytule obserwacji</label>
                 <input
@@ -203,6 +245,7 @@ export function ProfileCard({
                   placeholder={generatePlaceholder}
                   className="w-full rounded-md border border-green-200 px-3 py-2 text-sm text-green-900 outline-none focus:border-green-600"
                 />
+
                 <button
                   type="submit"
                   className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-green-600"
@@ -211,27 +254,45 @@ export function ProfileCard({
                 </button>
               </div>
             </form>
+
             <p className="mt-2 text-xs text-green-800">
               Znaleziono {filteredPublications.length} obserwacji
             </p>
           </>
         ) : null}
-        {user.publications.length === 0 ? (
+
+        {publications.length === 0 ? (
           <p className="text-sm text-green-800">Brak publikacji.</p>
         ) : (
           <ul className="space-y-2">
             {filteredPublications.map((publication) => (
               <li
                 key={publication.id}
-                className="rounded-md border border-green-200 bg-white/70 px-3 py-2 text-sm"
+                className="flex items-center justify-between gap-4 rounded-md border border-green-200 bg-white/70 px-3 py-2 text-sm"
               >
-                <p className="font-medium text-green-950">{publication.title}</p>
-                <p className="text-green-800">Data: {publication.createdAt}</p>
-                {publication.speciesName ? (
-                  <p className="text-green-800">
-                    Gatunek: {publication.speciesName}
+                <div>
+                  <p className="font-medium text-green-950">
+                    {publication.title}
                   </p>
-                ) : null}
+
+                  <p className="text-green-800">
+                    Data: {publication.createdAt}
+                  </p>
+
+                  {publication.speciesName ? (
+                    <p className="text-green-800">
+                      Gatunek: {publication.speciesName}
+                    </p>
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteObservation(publication.id)}
+                  className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
+                >
+                  Usuń
+                </button>
               </li>
             ))}
           </ul>

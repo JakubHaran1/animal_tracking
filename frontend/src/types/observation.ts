@@ -24,6 +24,7 @@ export interface CreateObservationPayload {
   latitude: number;
   longitude: number;
   img: File;
+  speciesId: number;
 }
 
 export interface ObservationDraft {
