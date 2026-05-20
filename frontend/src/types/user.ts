@@ -1,11 +1,10 @@
-import { Publication } from "./publication";
-
+import { Observation } from "./observation";
 export interface User {
   id: string;
   username: string;
   email: string;
   city: string;
   joinedAt: string;
-  publications: Publication[];
-  // wywaliłbym to publications bo będzie obciążać bez potrzeby - będzie trzeba przechowywać obserwacje a i tak zrobimy osobny request/podstrone
+  publications: Observation[];
+  is_verified: boolean;
 }

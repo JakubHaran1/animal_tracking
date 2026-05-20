@@ -1,22 +1,33 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import LocationMarker from "./LocationMarker";
-import { CoordsType } from "../../types";
+import ActiveMarker from "./markers/ActiveMarker";
+import { BoundsType, CoordsType, Observation } from "../../types";
+import ObsMarker from "./markers/ObsMarker";
+import { BoundsReader } from "./BoundsReader";
+import { useAuth } from "../../context/AuthContext";
 
 const DEFAULT_MAP_COORDS: CoordsType = {
   latitude: 52.2297,
   longitude: 21.0122,
 };
 
+type MapWrapperProps = {
+  setIsOpenObsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  openObservation: Observation | null;
+  setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
+  observations: Observation[];
+  setBounds: React.Dispatch<React.SetStateAction<BoundsType | null>>;
+};
 export default function MapWrapper({
-  canAddObservation,
-  handleMapClick,
-}: {
-  canAddObservation: boolean;
-  handleMapClick: (coords: CoordsType) => void;
-}) {
-  const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
+  setIsOpenObsModal,
 
+  openObservation,
+  setOpenObservation,
+  observations,
+  setBounds,
+}: MapWrapperProps) {
+  const [coords, setCoords] = useState<CoordsType | undefined>(undefined);
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
     if (!navigator.geolocation) {
       setCoords(DEFAULT_MAP_COORDS);
@@ -47,9 +58,18 @@ export default function MapWrapper({
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {canAddObservation && (
-            <LocationMarker handleMapClick={handleMapClick} />
-          )}
+          <BoundsReader setBounds={setBounds} />
+          {isAuthenticated && <ActiveMarker />}
+          {observations.length > 0 &&
+            observations.map((obs) => (
+              <ObsMarker
+                key={obs.id}
+                setIsOpenObsModal={setIsOpenObsModal}
+                openObservation={openObservation}
+                setOpenObservation={setOpenObservation}
+                observation={obs}
+              />
+            ))}
         </MapContainer>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
@@ -59,7 +79,9 @@ export default function MapWrapper({
               role="status"
               aria-label="Loading map"
             />
-            <p className="text-sm font-medium tracking-wide text-green-900">Loading</p>
+            <p className="text-sm font-medium tracking-wide text-green-900">
+              Loading
+            </p>
           </div>
         </div>
       )}
