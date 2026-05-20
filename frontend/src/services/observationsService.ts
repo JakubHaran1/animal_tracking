@@ -39,6 +39,7 @@ export const observationsService = {
     form_data.append("description", payload.description);
     form_data.append("latitude", payload.latitude.toFixed(6));
     form_data.append("longitude", payload.longitude.toFixed(6));
+    form_data.append("species", String(payload.speciesId));
     const resp = await privateApi.post<CreateObservationPayload>(
       "/observations/",
       form_data,
