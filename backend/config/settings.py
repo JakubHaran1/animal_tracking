@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'django_filters',
     'api'
 ]
 
@@ -134,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'pl'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -151,12 +150,6 @@ AUTH_USER_MODEL = "api.User"
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
-
-FRONTEND_URL = getenv('FRONTEND_URL', 'http://localhost:5173').rstrip('/')
-RESEND_API_KEY = getenv('RESEND_API_KEY', '').strip()
-RESEND_FROM_EMAIL = getenv('RESEND_FROM_EMAIL', 'onboarding@resend.dev').strip()
-EMAIL_VERIFICATION_TOKEN_MAX_AGE = int(getenv('EMAIL_VERIFICATION_TOKEN_MAX_AGE', '86400'))
-EMAIL_SENDING_ENABLED = env_bool('EMAIL_SENDING_ENABLED', False)
 
 # Do zmiany
 CORS_ALLOW_ALL_ORIGINS = env_bool('CORS_ALLOW_ALL_ORIGINS', True)

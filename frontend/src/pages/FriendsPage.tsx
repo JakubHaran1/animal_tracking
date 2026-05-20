@@ -26,9 +26,7 @@ export function FriendsPage() {
       <div className="flex flex-col gap-3 rounded-xl border border-green-200 bg-lime-50 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-green-900">Znajomi</h1>
-          <p className="text-sm text-green-800">
-            Lista znajomych i podstawowe akcje.
-          </p>
+          <p className="text-sm text-green-800">Lista znajomych i podstawowe akcje.</p>
         </div>
         <button
           type="button"

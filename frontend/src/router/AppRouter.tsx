@@ -7,7 +7,6 @@ import {
   FriendsPage,
   HomePage,
   ProfilePage,
-  VerifyEmailPage,
 } from "../pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 
@@ -18,7 +17,6 @@ export function AppRouter() {
         <AppLayout>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
             <Route
               path="/friends"
               element={
