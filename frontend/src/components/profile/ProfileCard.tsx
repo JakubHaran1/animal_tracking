@@ -1,14 +1,8 @@
 import { useMemo, useRef, useState } from "react";
-<<<<<<< HEAD
 import { User, Observation } from "../../types";
 import ObservationsList from "../observations/ObservationsList";
 import { createPortal } from "react-dom";
 import EditObservationModal from "../observations/EditObservationModal";
-=======
-import { User } from "../../types";
-import { observationsService } from "../../services";
-
->>>>>>> improvements2
 interface ProfileCardProps {
   user: User;
   title?: string;
@@ -40,10 +34,6 @@ export function ProfileCard({
   setObservationSaved,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [openObservation, setOpenObservation] = useState<Observation | null>(
-    null,
-  );
-  const [publications, setPublications] = useState(user.publications);
 
   const [searchFilter, setSearchFilter] = useState<ProfileObservationFilters>({
     title: "",
@@ -114,28 +104,9 @@ export function ProfileCard({
     setSearchFilter(filters);
   };
 
-  const handleDeleteObservation = async (id: string | number) => {
-    const confirmed = window.confirm(
-      "Czy na pewno chcesz usunąć obserwację?",
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await observationsService.deleteObservation(id);
-
-      setPublications((prev) =>
-        prev.filter((publication) => publication.id !== id),
-      );
-    } catch (error) {
-      console.error("Błąd usuwania obserwacji:", error);
-      alert("Nie udało się usunąć obserwacji.");
-    }
-  };
-
   const filteredPublications = useMemo(() => {
     if (!enableObservationFilters) {
-      return publications;
+      return user.publications;
     }
 
     const normalized = (value: string) => value.trim().toLowerCase();
@@ -220,7 +191,6 @@ export function ProfileCard({
         <h2 className="mb-3 text-base font-semibold text-green-900">
           Dodane publikacje
         </h2>
-    
 
         {enableObservationFilters && publications.length > 0 ? (
           <>
@@ -287,60 +257,6 @@ export function ProfileCard({
             </p>
           </>
         ) : null}
-
-        {publications.length === 0 ? (
-          <p className="text-sm text-green-800">Brak publikacji.</p>
-        ) : (
-          <>
-            <ObservationsList
-              openObservation={openObservation}
-              setOpenObservation={setOpenObservation}
-              observations={user.publications}
-              _listType="edit"
-            />
-            {openObservation &&
-              createPortal(
-                <EditObservationModal
-                  openObservation={openObservation}
-                  setOpenObservation={setOpenObservation}
-                  setObservationSaved={setObservationSaved}
-                />,
-                document.body,
-              )}
-          </>
-          <ul className="space-y-2">
-            {filteredPublications.map((publication) => (
-              <li
-                key={publication.id}
-                className="flex items-center justify-between gap-4 rounded-md border border-green-200 bg-white/70 px-3 py-2 text-sm"
-              >
-                <div>
-                  <p className="font-medium text-green-950">
-                    {publication.title}
-                  </p>
-
-                  <p className="text-green-800">
-                    Data: {publication.createdAt}
-                  </p>
-
-                  {publication.speciesName ? (
-                    <p className="text-green-800">
-                      Gatunek: {publication.speciesName}
-                    </p>
-                  ) : null}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleDeleteObservation(publication.id)}
-                  className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
-                >
-                  Usuń
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </section>
   );

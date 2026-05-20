@@ -148,7 +148,6 @@ export default function ImageCropper({
     if (!imgReverse) return;
     const imgArr = imgReverse.split("/");
     const imgName = imgArr[imgArr.length - 1];
-    console.log(imgReverse);
     setImgData({
       img: imgReverse,
       imgTitile: "reverse.webp",

@@ -10,8 +10,6 @@ import {
 import MapWrapper from "./MapWrapper";
 import ObservationsList from "../observations/ObservationsList";
 import ObservationSearch from "../observations/ObservationSearch";
-import { useAuth } from "../../context/AuthContext";
-import { useObservationContext } from "../../context/ObservationContext";
 import GetObservationModal from "../observations/GetObservationModal";
 import { observationsService } from "../../services";
 
@@ -20,8 +18,6 @@ export function MapPlaceholder({
 }: {
   observationSaved: number;
 }) {
-  const { onOpenModal } = useObservationContext();
-  const { isAuthenticated } = useAuth();
   const [observations, setObservations] = useState<Observation[]>([]);
   const [bounds, setBounds] = useState<BoundsType | null>(null);
   const [openObservation, setOpenObservation] = useState<Observation | null>(
@@ -113,7 +109,6 @@ export function MapPlaceholder({
             <h1 className="text-xl font-semibold text-green-900 2xl:text-2xl">
               Ekran główny (mapa)
             </h1>
-           
           </div>
           <p className="text-sm text-green-800 2xl:text-base">
             Placeholder przygotowany pod szybkie podpięcie Leaflet i danych
