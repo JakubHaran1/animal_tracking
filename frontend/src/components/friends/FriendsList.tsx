@@ -6,7 +6,11 @@ interface FriendsListProps {
   onOpenProfile: (friendId: string) => void;
 }
 
-export function FriendsList({ friends, onRemove, onOpenProfile }: FriendsListProps) {
+export function FriendsList({
+  friends,
+  onRemove,
+  onOpenProfile,
+}: FriendsListProps) {
   if (friends.length === 0) {
     return (
       <div className="rounded-xl border border-green-200 bg-lime-50 p-6 text-sm text-green-800 shadow-sm">

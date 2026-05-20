@@ -49,7 +49,9 @@ export const observationsService = {
   async editObservation(id: string, payload: CreateObservationPayload) {
     let form_data = new FormData();
 
-    console.log(typeof payload.latitude);
+    console.log(payload.img);
+    console.log(payload.img instanceof File);
+    console.log(typeof payload.img);
     form_data.append("img", payload.img);
     form_data.append("title", payload.title);
     form_data.append("description", payload.description);
@@ -61,6 +63,10 @@ export const observationsService = {
       form_data,
     );
 
+    return resp;
+  },
+  async deleteObservation(id: string) {
+    const resp = await privateApi.delete(`/observations/${id}/`);
     return resp;
   },
 };

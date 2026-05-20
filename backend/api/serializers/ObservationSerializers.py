@@ -102,23 +102,5 @@ class ObservationSerializer(ModelSerializer):
             "species",
         ]
 
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.img  = validated_data.get('img ', instance.img )
-        instance.save()
-        return instance
-
-        
-
-
-
-    # def create(self, validated_data):
-        # To do wywalenia - musi byc inny flow. User wpisuje we frontendie inputa -> debouncing do api -> jak nie ma to opcja dodanie w modalu
-        # w celach ćwiczebnych
-        # pobiera species data od usera i pobiera z bazy danych objekt species lub go tworzy 
-        # species_data = validated_data.pop("species")
-        # species_obj, _ = SpeciesModel.objects.get_or_create(
-        #     **species_data)
 
        

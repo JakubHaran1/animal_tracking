@@ -18,7 +18,7 @@ import { observationsService } from "../../services";
 export function MapPlaceholder({
   observationSaved,
 }: {
-  observationSaved: boolean;
+  observationSaved: number;
 }) {
   const { onOpenModal } = useObservationContext();
   const { isAuthenticated } = useAuth();

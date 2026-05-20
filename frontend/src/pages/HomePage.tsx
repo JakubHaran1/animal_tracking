@@ -4,7 +4,7 @@ import { AddObservationModal, MapPlaceholder } from "../components";
 import { ObservationProvider } from "../context/ObservationContext";
 
 export function HomePage() {
-  const [observationSaved, setObservationSaved] = useState(false);
+  const [observationSaved, setObservationSaved] = useState(0);
   return (
     <>
       <ObservationProvider>

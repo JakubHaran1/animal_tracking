@@ -7,6 +7,7 @@ import { isAxiosError } from "axios";
 interface EditObservationModalProps {
   openObservation: Observation | null;
   setOpenObservation: React.Dispatch<React.SetStateAction<Observation | null>>;
+  setObservationSaved: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface ErrorStateType {
@@ -18,6 +19,7 @@ interface ErrorStateType {
 export default function EditObservationModal({
   openObservation,
   setOpenObservation,
+  setObservationSaved,
 }: EditObservationModalProps) {
   const CropRef = useRef<ImageCropperHandle>(null);
   const [form, setForm] = useState<Observation | null>(openObservation);
@@ -41,6 +43,7 @@ export default function EditObservationModal({
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const img = await CropRef.current?.getCroppedData();
+    console.log(img);
     if (!img || !form) {
       console.log("error");
       return;
@@ -61,6 +64,8 @@ export default function EditObservationModal({
         setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
       }
     }
+    setOpenObservation(null);
+    setObservationSaved((prev) => prev + 1);
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-950/40 px-4">
@@ -79,7 +84,18 @@ export default function EditObservationModal({
             Zamknij
           </button>
         </div>
-
+        <button
+          type="submit"
+          onClick={async () => {
+            if (openObservation)
+              await observationsService.deleteObservation(openObservation?.id);
+            setOpenObservation(null);
+            setObservationSaved((prev) => prev++);
+          }}
+          className="w-full rounded-md bg-red-700 px-4 py-2 text-sm font-semibold text-lime-50 transition hover:bg-red-600"
+        >
+          Usuń
+        </button>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <p className="text-red-600">{errors.other}</p>
           <label htmlFor="title" className="block text-sm text-green-900">

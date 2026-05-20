@@ -42,7 +42,10 @@ export default function ImageCropper({
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const ASPECT_RATIO = useMemo(() => aspectRatioWidth / aspectRatioHeight, []);
+  const ASPECT_RATIO = useMemo(
+    () => aspectRatioWidth / aspectRatioHeight,
+    [aspectRatioWidth, aspectRatioHeight],
+  );
 
   // exposing child methods to parent
   useImperativeHandle(ref, () => {
@@ -94,8 +97,6 @@ export default function ImageCropper({
         const readerData = reader.result?.toString() || "";
         imgElement.src = readerData;
 
-        console.log("reader", readerData);
-
         imgElement.addEventListener("load", () => {
           const { naturalWidth, naturalHeight } = imgElement;
           if (naturalWidth < MIN_WIDTH || naturalHeight < MIN_HEIGHT) {
@@ -120,31 +121,38 @@ export default function ImageCropper({
     setCrop(c);
   }, []);
 
+  const createInitialCrop = useCallback(
+    (width: number, height: number) => {
+      const cropWidthPercent = (MIN_WIDTH / width) * 100;
+
+      return makeAspectCrop(
+        {
+          unit: "%",
+          width: cropWidthPercent,
+        },
+        ASPECT_RATIO,
+        width,
+        height,
+      );
+    },
+    [ASPECT_RATIO, MIN_WIDTH],
+  );
   // Po załadowaniu zdjęcia tworzy crop - miejsce do zaznaczenia wycinka
   const onLoadImg = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
-    const cropWidthPercent = (MIN_WIDTH / width) * 100;
-    const crop = makeAspectCrop(
-      { unit: "%", width: cropWidthPercent },
-      ASPECT_RATIO,
-      width,
-      height,
-    );
 
-    handleCropChange(crop);
+    handleCropChange(createInitialCrop(width, height));
   };
 
   useEffect(() => {
-    if (!imgReverse || !inputRef.current) return;
+    if (!imgReverse) return;
     const imgArr = imgReverse.split("/");
     const imgName = imgArr[imgArr.length - 1];
-    inputRef.current.src = imgReverse;
+    console.log(imgReverse);
     setImgData({
       img: imgReverse,
       imgTitile: "reverse.webp",
     });
-
-    setCrop(undefined);
   }, [imgReverse]);
 
   return (
@@ -174,6 +182,7 @@ export default function ImageCropper({
             style={{ maxHeight: maxContainerHeight }}
           >
             <img
+              key={imgData.img}
               ref={imgRef}
               src={imgData.img}
               crossOrigin="anonymous"
@@ -187,9 +196,9 @@ export default function ImageCropper({
       {crop && (
         // to matryca z której bierzemy wycinek
         <canvas
+          className="hidden"
           ref={canvasRef}
           style={{
-            display: "none",
             border: "2px solid black",
             width: MIN_WIDTH,
             height: MIN_HEIGHT,

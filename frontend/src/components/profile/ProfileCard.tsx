@@ -8,6 +8,8 @@ interface ProfileCardProps {
   title?: string;
   onEdit?: () => void;
   enableObservationFilters?: boolean;
+  observationSaved: number;
+  setObservationSaved: React.Dispatch<React.SetStateAction<number>>;
 }
 
 type ProfileObservationFilters = {
@@ -27,6 +29,7 @@ export function ProfileCard({
   title = "Mój profil",
   onEdit,
   enableObservationFilters = false,
+  setObservationSaved,
 }: ProfileCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [openObservation, setOpenObservation] = useState<Observation | null>(
@@ -164,9 +167,6 @@ export function ProfileCard({
         <h2 className="mb-3 text-base font-semibold text-green-900">
           Dodane publikacje
         </h2>
-        <button onClick={() => console.log(user.publications)}>
-          show user
-        </button>
         {enableObservationFilters && user.publications.length > 0 ? (
           <>
             <div className="flex flex-col md:flex-row items-start gap-4">
@@ -244,6 +244,7 @@ export function ProfileCard({
                 <EditObservationModal
                   openObservation={openObservation}
                   setOpenObservation={setOpenObservation}
+                  setObservationSaved={setObservationSaved}
                 />,
                 document.body,
               )}

@@ -18,7 +18,7 @@ interface ErrorStateType {
 export function AddObservationModal({
   setObservationSaved,
 }: {
-  setObservationSaved: React.Dispatch<React.SetStateAction<boolean>>;
+  setObservationSaved: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [form, setForm] = useState<ObservationDraft>(initialFormState);
   const [errors, setErrors] = useState<ErrorStateType>({
@@ -67,7 +67,7 @@ export function AddObservationModal({
       });
 
       setForm(initialFormState);
-      setObservationSaved(true);
+      setObservationSaved((prev) => prev++);
       onCloseModal();
     } catch (err) {
       if (isAxiosError(err)) {
@@ -141,6 +141,7 @@ export function AddObservationModal({
             aspectRatioHeight={1}
             maxContainerHeight="30vh"
             ref={CropRef}
+            imgReverse=""
           />
           <p className="text-xs text-green-700">
             Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do

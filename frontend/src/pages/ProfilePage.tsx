@@ -8,10 +8,11 @@ export function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [observationSaved, setObservationSaved] = useState(0);
 
   useEffect(() => {
     profileService.getMyProfile().then(setUser);
-  }, []);
+  }, [observationSaved]);
 
   const handleSave = async (city: string) => {
     setError(null);
@@ -44,6 +45,8 @@ export function ProfilePage() {
           setError(null);
           setIsEditing(true);
         }}
+        observationSaved={observationSaved}
+        setObservationSaved={setObservationSaved}
       />
       <ProfileEditModal
         isOpen={isEditing}
