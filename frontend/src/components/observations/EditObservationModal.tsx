@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { ImageCropperHandle, Observation } from "../../types";
 import ImageCropper from "../form/ImageCroppper";
+import { observationsService } from "../../services";
+import { isAxiosError } from "axios";
 
 interface EditObservationModalProps {
   openObservation: Observation | null;
@@ -39,38 +41,26 @@ export default function EditObservationModal({
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const img = await CropRef.current?.getCroppedData();
-    console.log(img);
+    if (!img || !form) {
+      console.log("error");
+      return;
+    }
 
-    // if (
-    //   !img ||
-    //   !activeObservationCoords?.latitude ||
-    //   !activeObservationCoords?.longitude
-    // ) {
-    //   console.log("error");
-
-    //   return;
-    // }
-    // const latitude = activeObservationCoords.latitude;
-    // const longitude = activeObservationCoords.longitude;
-    // try {
-    //   await observationsService.createObservation({
-    //     ...form,
-    //     latitude,
-    //     longitude,
-    //     img,
-    //   });
-
-    //   setForm(initialFormState);
-    //   setObservationSaved(true);
-    //   onCloseModal();
-    // } catch (err) {
-    //   if (isAxiosError(err)) {
-    //     setErrors((rest) => ({ ...rest, ...err.response?.data }));
-    //   } else {
-    //     setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
-    //   }
-    //   setForm(initialFormState);
-    // }
+    try {
+      if (!openObservation) return;
+      await observationsService.editObservation(openObservation?.id, {
+        ...form,
+        img,
+      });
+    } catch (err) {
+      if (isAxiosError(err)) {
+        console.log(err);
+        setErrors((rest) => ({ ...rest, ...err.response?.data }));
+      } else {
+        console.log(err);
+        setErrors((prev) => ({ ...prev, other: "Something goes wrong" }));
+      }
+    }
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-green-950/40 px-4">
@@ -135,10 +125,6 @@ export default function EditObservationModal({
             ref={CropRef}
             imgReverse={form?.img ?? ""}
           />
-          <p className="text-xs text-green-700">
-            Placeholder: formularz jest gotowy pod przyszłe wysyłanie danych do
-            backendu.
-          </p>
 
           <button
             type="submit"

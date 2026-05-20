@@ -49,16 +49,26 @@ export default function ImageCropper({
     return {
       // obsługa funkcji mapującej
       async getCroppedData() {
-        if (!imgRef.current || !canvasRef.current || !crop || !inputRef.current)
+        if (
+          !imgRef.current ||
+          !canvasRef.current ||
+          !crop ||
+          !inputRef.current
+        ) {
+          console.log("file");
           return;
+        }
+
         const file = await croperService.setCanvasPreview({
           image: imgRef.current,
           imageTitle: imgData.imgTitile,
           canvas: canvasRef.current,
           crop: crop,
         });
+
         setImgData({ img: "", imgTitile: "" });
         inputRef.current.value = "";
+        console.log(crop);
         return file;
       },
     };
@@ -83,7 +93,7 @@ export default function ImageCropper({
         const imgElement = new Image();
         const readerData = reader.result?.toString() || "";
         imgElement.src = readerData;
-        console.log(readerData);
+
         console.log("reader", readerData);
 
         imgElement.addEventListener("load", () => {
@@ -126,10 +136,12 @@ export default function ImageCropper({
 
   useEffect(() => {
     if (!imgReverse || !inputRef.current) return;
-
+    const imgArr = imgReverse.split("/");
+    const imgName = imgArr[imgArr.length - 1];
+    inputRef.current.src = imgReverse;
     setImgData({
       img: imgReverse,
-      imgTitile: "reverse",
+      imgTitile: "reverse.webp",
     });
 
     setCrop(undefined);
@@ -139,27 +151,15 @@ export default function ImageCropper({
     <>
       <label className="block text-sm text-green-900">
         Zdjęcie
-        {imgReverse ? (
-          <input
-            type="file"
-            accept="image/jpeg,image/png"
-            ref={inputRef}
-            // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
+        <input
+          type="file"
+          accept="image/jpeg,image/png"
+          ref={inputRef}
+          // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
 
-            onChange={onSelect}
-            className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
-          />
-        ) : (
-          <input
-            type="file"
-            accept="image/jpeg,image/png"
-            ref={inputRef}
-            // gdy value w inpucie change - trigger readera, odczyt zdjęcia - utworzenie el zdjecia,
-
-            onChange={onSelect}
-            className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
-          />
-        )}
+          onChange={onSelect}
+          className="mt-1 w-full rounded-md border border-green-300 bg-white px-3 py-2 text-green-950 file:mr-3 file:rounded-md file:border-0 file:bg-amber-300 file:px-3 file:py-1 file:font-medium file:text-green-950 hover:file:bg-amber-200"
+        />
         <p className="color-red">{error}</p>
       </label>
       {imgData.img && (

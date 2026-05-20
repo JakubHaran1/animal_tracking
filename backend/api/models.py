@@ -1,7 +1,14 @@
+import os
+
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 from uuid import uuid4
+
+import os
+import io
+from PIL import Image
+from django.core.files.base import ContentFile
 
 def create_obs_img_path(instance,filename):
     return f'observations/{instance.author.id}/{instance.title}/{filename}'
@@ -41,6 +48,27 @@ class ObservationModel(models.Model):
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
     date = models.DateField(auto_now_add=True)
+
+    def save(self,*args, **kwargs):
+        if self.pk:
+            old = ObservationModel.objects.get(pk=self.pk)
+
+        img = self.img
+        # if old.img == img:
+        #     super().save(*args, **kwargs)
+        #     return
+        img_name, ext = os.path.splitext(img.name)
+        new_name = img_name + '_thumbnail.webp'
+        print("d",new_name)
+        with Image.open(img) as im:
+            im.thumbnail((300, 300))
+            bufor = io.BytesIO()
+            im.save(bufor, 'webp')
+
+
+        img_new = ContentFile(bufor.getvalue(), new_name)
+        self.img_thumbnail.save(new_name,img_new,save=False)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

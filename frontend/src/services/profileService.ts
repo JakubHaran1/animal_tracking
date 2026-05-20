@@ -7,6 +7,8 @@ interface ObservationResponse {
   title: string;
   img: string;
   img_thumbnail: string;
+  latitude: number;
+  longitude: number;
   description: string;
   date: string;
   species_name?: string | null;
@@ -28,6 +30,8 @@ const mapObservationToPublication = (
   title: observation.title,
   img: observation.img,
   img_thumbnail: observation.img_thumbnail,
+  latitude: observation.longitude,
+  longitude: observation.longitude,
   description: observation.description,
   createdAt: observation.date,
   speciesName: observation.species_name ?? "",

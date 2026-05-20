@@ -25,16 +25,6 @@ export interface CreateObservationPayload {
   img: File;
 }
 
-export interface EditObservationPayload {
-  // chwilowo - potem dodamy
-  // speciesId: number;
-  title: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-  img: File;
-}
-
 export interface ObservationDraft {
   title: string;
   description: string;

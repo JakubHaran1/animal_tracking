@@ -26,7 +26,7 @@ class ObservationSummarySerializer(ModelSerializer):
 
     class Meta:
         model = ObservationModel
-        fields = ["id", "title","img","img_thumbnail","description", "date", "species_name"]
+        fields = ["id", "title","img","img_thumbnail","latitude","longitude","description", "date", "species_name"]
 
 
 class UserSerializer(ModelSerializer):
