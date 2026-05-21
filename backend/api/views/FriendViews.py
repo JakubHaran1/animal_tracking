@@ -58,7 +58,7 @@ class FriendViewSet(ViewSet):
 
     def destroy(self, request, pk=None):
         if not pk:
-            raise ValidationError({"friend_id": "Id znajomego jest wymagane."})
+            raise ValidationError({"friend_id": "Friend id is required."})
 
         try:
             friend = User.objects.get(id=pk)
@@ -85,17 +85,17 @@ class FriendRequestViewSet(ModelViewSet):
         to_user = serializer.validated_data.get("to_user")
 
         if from_user == to_user:
-            raise ValidationError({"to_user_id": "Nie możesz dodać siebie do znajomych."})
+            raise ValidationError({"to_user_id": "Cannot add yourself as a friend."})
 
         if _friendship_exists(from_user, to_user):
-            raise ValidationError({"to_user_id": "Znajomość już istnieje."})
+            raise ValidationError({"to_user_id": "Friendship already exists."})
 
         pending_exists = FriendRequest.objects.filter(
             Q(from_user=from_user, to_user=to_user, status=FriendRequest.Status.PENDING)
             | Q(from_user=to_user, to_user=from_user, status=FriendRequest.Status.PENDING)
         ).exists()
         if pending_exists:
-            raise ValidationError({"to_user_id": "Zaproszenie zostało już wysłane."})
+            raise ValidationError({"to_user_id": "Friend request already pending."})
 
         serializer.save(from_user=from_user, status=FriendRequest.Status.PENDING)
 
@@ -104,23 +104,23 @@ class FriendRequestViewSet(ModelViewSet):
         next_status = request.data.get("status")
 
         if not next_status:
-            raise ValidationError({"status": "Status jest wymagany."})
+            raise ValidationError({"status": "Status is required."})
 
         if instance.status != FriendRequest.Status.PENDING:
-            raise ValidationError({"status": "Tylko oczekujące zaproszenia można aktualizować."})
+            raise ValidationError({"status": "Only pending requests can be updated."})
 
         if next_status == FriendRequest.Status.ACCEPTED:
             if request.user != instance.to_user:
-                raise PermissionDenied("Tylko odbiorca może zaakceptować zaproszenie.")
+                raise PermissionDenied("Only the recipient can accept a request.")
             _create_friendship(instance.from_user, instance.to_user)
         elif next_status == FriendRequest.Status.DECLINED:
             if request.user != instance.to_user:
-                raise PermissionDenied("Tylko odbiorca może odrzucić zaproszenie.")
+                raise PermissionDenied("Only the recipient can decline a request.")
         elif next_status == FriendRequest.Status.CANCELED:
             if request.user != instance.from_user:
-                raise PermissionDenied("Tylko nadawca może anulować zaproszenie.")
+                raise PermissionDenied("Only the sender can cancel a request.")
         else:
-            raise ValidationError({"status": "Nieprawidłowa wartość statusu."})
+            raise ValidationError({"status": "Invalid status value."})
 
         serializer = self.get_serializer(
             instance, data={"status": next_status}, partial=True

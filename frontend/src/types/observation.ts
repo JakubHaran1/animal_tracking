@@ -5,10 +5,9 @@ export interface CoordsType {
 
 export interface Observation {
   id: string;
-  speciesName: string;
+  userId: string;
+  speciesId: number;
   title: string;
-  img: string;
-  img_thumbnail: string;
   description: string;
   latitude: number;
   longitude: number;
@@ -16,36 +15,10 @@ export interface Observation {
 }
 
 export interface CreateObservationPayload {
-  // chwilowo - potem dodamy
-  // speciesId: number;
+  userId: string;
+  speciesId: number;
   title: string;
   description: string;
   latitude: number;
   longitude: number;
-  img: File;
-  speciesId: number;
 }
-
-export interface ObservationDraft {
-  title: string;
-  description: string;
-}
-
-export type ObservationFilterTypes = {
-  title: string;
-  author: string;
-  species: string;
-};
-
-export type CheckedFilterTypes = {
-  title: boolean;
-  author: boolean;
-  species: boolean;
-};
-
-export type Species = {
-  id: number;
-  name: string;
-  latitude?: number;
-  longitude?: number;
-};

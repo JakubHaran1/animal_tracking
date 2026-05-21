@@ -56,7 +56,7 @@ describe("AuthModal", () => {
 
     renderWithProvider(<AuthModal {...props} />);
 
-    await user.type(screen.getByLabelText("Nazwa użytkownika"), "user@example.com");
+    await user.type(screen.getByLabelText("Username"), "user@example.com");
     await user.type(screen.getByLabelText("Hasło"), "password");
     await user.click(screen.getByRole("button", { name: "Zaloguj" }));
 

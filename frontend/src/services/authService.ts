@@ -7,15 +7,6 @@ interface LoginResponse {
   detail?: string;
 }
 
-interface RegisterResponse {
-  detail: string;
-  user: User;
-}
-
-interface VerifyEmailResponse {
-  detail: string;
-}
-
 export const authService = {
   async loginUser(data: CredentialsType): Promise<LoginResponse> {
     const res = await postData<LoginResponse>("/users/login/", data);
@@ -25,16 +16,11 @@ export const authService = {
 
     return res;
   },
-  async registerUser(data: RegisterPayload): Promise<RegisterResponse> {
-    const res = await postData<RegisterResponse>("/users/", data);
-    return res;
-  },
-  async verifyEmail(token: string): Promise<VerifyEmailResponse> {
-    return postData<VerifyEmailResponse>("/users/verify-email/", { token });
+  async registerUser(data: RegisterPayload): Promise<void> {
+    await postData<void>("/users/", data);
   },
   async getUser(): Promise<User> {
     const res = await getDataAuth<User>("/users/me/");
-    console.log(res);
     return res;
   },
 };
