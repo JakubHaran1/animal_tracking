@@ -1,11 +1,17 @@
 import { isAxiosError } from "axios";
 import { privateApi } from "../api/privateApi";
-import { Publication, User } from "../types";
+import { Observation, User } from "../types";
 
 interface ObservationResponse {
   id: number;
   title: string;
+  img: string;
+  img_thumbnail: string;
+  latitude: number;
+  longitude: number;
+  description: string;
   date: string;
+  species_name?: string | null;
 }
 
 interface UserProfileResponse {
@@ -17,12 +23,24 @@ interface UserProfileResponse {
   observations?: ObservationResponse[];
 }
 
+interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+  confirm_new_password: string;
+}
+
 const mapObservationToPublication = (
   observation: ObservationResponse,
-): Publication => ({
+): Observation => ({
   id: observation.id.toString(),
   title: observation.title,
+  img: observation.img,
+  img_thumbnail: observation.img_thumbnail,
+  latitude: observation.longitude,
+  longitude: observation.longitude,
+  description: observation.description,
   createdAt: observation.date,
+  speciesName: observation.species_name ?? "",
 });
 
 const toDateOnly = (value: string): string => value.split("T")[0] ?? value;
@@ -61,5 +79,9 @@ export const profileService = {
       city,
     });
     return mapProfileResponse(response.data);
+  },
+
+  async changePassword(payload: ChangePasswordPayload): Promise<void> {
+    await privateApi.post("/users/change-password/", payload);
   },
 };
