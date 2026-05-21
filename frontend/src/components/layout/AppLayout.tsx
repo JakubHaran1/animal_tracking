@@ -24,7 +24,6 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   const handleLoginSuccess = () => {
-    // logIn(); trzeba przekazac dane usera
     setIsAuthModalOpen(false);
     setAuthView("login");
   };

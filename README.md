@@ -41,7 +41,7 @@ Backend:
 - Django REST Framework
 - djangorestframework-simplejwt
 - Pillow
-- SQLite / PostgreSQL
+- PostgreSQL (domyslnie), SQLite (opcjonalnie)
 
 Frontend:
 - React 19
@@ -91,9 +91,10 @@ Domyslne adresy:
 Aktywne uslugi:
 - backend
 - frontend
+- postgres
 
 Domyslna baza danych:
-- SQLite (plik `backend/db.sqlite3`, podmontowany jako volume)
+- PostgreSQL (kontener `postgres`)
 
 ## 6. Uruchomienie lokalne
 
@@ -127,7 +128,7 @@ Podstawowe zmienne:
 - `DEBUG`
 - `ALLOWED_HOSTS`
 - `CORS_ALLOW_ALL_ORIGINS`
-- `DB_ENGINE` (`sqlite` lub `postgres`)
+- `DB_ENGINE` (`postgres` lub `sqlite`, domyslnie `postgres`)
 
 Zmienne PostgreSQL:
 - `POSTGRES_DB`
@@ -140,17 +141,12 @@ Zmienne PostgreSQL:
 
 - `VITE_API_BASE_URL` (np. `http://localhost:8000/api/`)
 
-### PostgreSQL w Docker (profil opcjonalny)
+### SQLite (opcjonalnie)
 
-```bash
-docker compose --profile postgres up --build
-```
-
-Przy tym profilu ustaw:
+Jesli chcesz uzyc SQLite lokalnie, ustaw:
 
 ```env
-DB_ENGINE=postgres
-POSTGRES_HOST=postgres
+DB_ENGINE=sqlite
 ```
 
 ## 8. API overview
